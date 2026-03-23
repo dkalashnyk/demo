@@ -1,7 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 
 import { BasePage } from './BasePage';
-import { Header } from './components/header';
+import { Header } from './components/Header';
 
 export class ProductsPage extends BasePage {
   constructor(page: Page) {

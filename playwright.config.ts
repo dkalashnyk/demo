@@ -60,11 +60,13 @@ export default defineConfig({
     {
       name: 'api',
       grep: /@api/,
+      testDir: './tests/API',
     },
     {
       name: 'ui',
       use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/ui.json' },
       grep: /@ui/,
+      testDir: './tests/UI',
       dependencies: ['setup'],
     },
 
