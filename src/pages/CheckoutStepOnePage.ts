@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 
 import { BasePage } from './BasePage';
-import { Header } from './components/header';
+import { Header } from './components/Header';
 import type { CheckoutFormData } from '../test-context/scenarioContext';
 
 export class CheckoutStepOnePage extends BasePage {
