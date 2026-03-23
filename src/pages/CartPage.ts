@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 
 import { BasePage } from './BasePage';
-import { Header } from './components/header';
+import { Header } from './components/Header';
 import { CartTable } from './components/CartTable';
 
 export class CartPage extends BasePage {

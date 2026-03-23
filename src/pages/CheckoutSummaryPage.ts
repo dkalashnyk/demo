@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test';
 
 import { BasePage } from './BasePage';
-import { Header } from './components/header';
+import { Header } from './components/Header';
 
 export class CheckoutSummaryPage extends BasePage {
   readonly header: Header;
