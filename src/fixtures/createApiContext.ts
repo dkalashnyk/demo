@@ -4,6 +4,8 @@ import { request } from '@playwright/test';
 import { env } from '../../config/env';
 
 export async function createApiContext() {
+  if (!env.apiBaseUrl) throw new Error('API_BASE_URL is not set');
+  if (!env.apiKey) throw new Error('API_KEY is not set');
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     Accept: 'application/json',

@@ -21,10 +21,11 @@ jobs:
       - name: Run API tests
         run: npm run test:ci:api
         env:
-          API_BASE_URL: ${{ secrets.QA_API_BASE_URL }}
-          API_KEY: ${{ secrets.QA_API_KEY }}
-          API_LOGIN: ${{ secrets.QA_API_LOGIN }}
-          API_PASSWORD: ${{ secrets.QA_API_PASSWORD }}
+          TEST_ENV: qa
+          QA_API_BASE_URL: ${{ secrets.QA_API_BASE_URL }}
+          QA_API_KEY: ${{ secrets.QA_API_KEY }}
+          QA_API_LOGIN: ${{ secrets.QA_API_LOGIN }}
+          QA_API_PASSWORD: ${{ secrets.QA_API_PASSWORD }}
 
       - name: Upload API test results
         if: always()
@@ -49,11 +50,12 @@ jobs:
       - name: Run UI tests
         run: npm run test:ci:ui
         env:
-          BASE_URL: ${{ secrets.QA_BASE_URL }}
-          API_BASE_URL: ${{ secrets.QA_API_BASE_URL }}
-          API_KEY: ${{ secrets.QA_API_KEY }}
-          API_LOGIN: ${{ secrets.QA_API_LOGIN }}
-          API_PASSWORD: ${{ secrets.QA_API_PASSWORD }}
+          TEST_ENV: qa
+          QA_BASE_URL: ${{ secrets.QA_BASE_URL }}
+          QA_API_BASE_URL: ${{ secrets.QA_API_BASE_URL }}
+          QA_API_KEY: ${{ secrets.QA_API_KEY }}
+          QA_API_LOGIN: ${{ secrets.QA_API_LOGIN }}
+          QA_API_PASSWORD: ${{ secrets.QA_API_PASSWORD }}
           QA_USER: ${{ secrets.QA_USER }}
           QA_PASSWORD: ${{ secrets.QA_PASSWORD }}
 
