@@ -1,0 +1,50 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:qa": "npm run report:allure:clean-results && docker run --rm -w /app --env TEST_ENV=qa --env-file ./config/.env.qa -v \"%cd%:/app\" demo",
+    "test:qa:all": "npm run test:qa -- --project all",
+    "test:qa:smoke": "npm run test:qa -- --project smoke",
+    "test:qa:api": "npm run test:qa -- --project api",
+    "test:qa:ui": "npm run test:qa -- --project ui",
+    "test:prod": "npm run report:allure:clean-results && docker run --rm -w /app --env TEST_ENV=prod --env-file ./config/.env.prod -v \"%cd%:/app\" demo",
+    "test:prod:all": "npm run test:prod -- --project all",
+    "test:prod:smoke": "npm run test:prod -- --project smoke",
+    "test:prod:api": "npm run test:prod -- --project api",
+    "test:prod:ui": "npm run test:prod -- --project ui",
+    "test:ci:api": "playwright test --project=api",
+    "test:ci:ui": "playwright test --project=setup --project=ui",
+    "report:default": "npx playwright show-report",
+    "report:allure:clean-results": "rmdir /s /q allure-results 2>nul || exit 0",
+    "report:allure:seed-history": "node scripts/allure-history.mjs seed",
+    "report:allure:trim-history": "node scripts/allure-history.mjs trim",
+    "report:allure:generate": "npm run report:allure:seed-history && docker run --rm -v \"%cd%:/work\" frankescobar/allure-docker-service allure generate /work/allure-results -o /work/allure-report --clean && npm run report:allure:trim-history",
+    "report:allure:open": "docker run --rm -p 4040:4040 -v \"%cd%:/work\" frankescobar/allure-docker-service allure open /work/allure-report -h 0.0.0.0 -p 4040",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@faker-js/faker": "^10.2.0",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.53.1",
+    "@typescript-eslint/parser": "^8.53.1",
+    "allure-commandline": "^2.36.0",
+    "allure-playwright": "^3.4.5",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.53.1"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}
