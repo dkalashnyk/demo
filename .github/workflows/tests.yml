@@ -22,6 +22,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Install Java
+        if: always()
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Install dependencies
         run: npm ci
 
@@ -120,11 +127,3 @@ jobs:
           API_PASSWORD: ${{ secrets.QA_API_PASSWORD }}
           UI_USER: ${{ secrets.QA_USER }}
           UI_PASSWORD: ${{ secrets.QA_PASSWORD }}
-
-      - name: Commit updated snapshots
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add tests/__snapshots__/
-          git diff --staged --quiet || git commit -m "chore: update visual snapshots"
-          git push
