@@ -12,22 +12,22 @@ type EnvConfig = {
 
 const configs: Record<EnvironmentName, EnvConfig> = {
   qa: {
-    baseUrl: process.env.QA_BASE_URL ?? '',
-    apiBaseUrl: process.env.QA_API_BASE_URL ?? '',
-    user: process.env.QA_USER ?? '',
-    password: process.env.QA_PASSWORD ?? '',
-    apiLogin: process.env.QA_API_USER ?? '',
-    apiPassword: process.env.QA_API_PASSWORD ?? '',
-    apiKey: process.env.QA_API_KEY ?? '',
+    baseUrl: process.env.BASE_URL ?? '',
+    apiBaseUrl: process.env.API_BASE_URL ?? '',
+    user: process.env.USER ?? '',
+    password: process.env.PASSWORD ?? '',
+    apiLogin: process.env.API_LOGIN ?? '',
+    apiPassword: process.env.API_PASSWORD ?? '',
+    apiKey: process.env.API_KEY ?? '',
   },
   prod: {
-    baseUrl: process.env.PROD_BASE_URL ?? '',
-    apiBaseUrl: process.env.PROD_API_BASE_URL ?? '',
-    user: process.env.PROD_USER ?? '',
-    password: process.env.PROD_PASSWORD ?? '',
-    apiLogin: process.env.PROD_API_USER ?? '',
-    apiPassword: process.env.PROD_API_PASSWORD ?? '',
-    apiKey: process.env.PROD_API_KEY ?? '',
+    baseUrl: process.env.BASE_URL ?? '',
+    apiBaseUrl: process.env.API_BASE_URL ?? '',
+    user: process.env.USER ?? '',
+    password: process.env.PASSWORD ?? '',
+    apiLogin: process.env.API_LOGIN ?? '',
+    apiPassword: process.env.API_PASSWORD ?? '',
+    apiKey: process.env.API_KEY ?? '',
   },
 };
 
