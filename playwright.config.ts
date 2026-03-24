@@ -16,6 +16,8 @@ import { env } from './config/env';
 export default defineConfig({
   testDir: './tests',
   snapshotDir: './tests/__snapshots__',
+  snapshotPathTemplate:
+    '{snapshotDir}/{testFileName}-snapshots/{arg}-{projectName}-{platform}{ext}',
   timeout: 10000,
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
