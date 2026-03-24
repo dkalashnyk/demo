@@ -14,8 +14,8 @@ const configs: Record<EnvironmentName, EnvConfig> = {
   qa: {
     baseUrl: process.env.BASE_URL ?? '',
     apiBaseUrl: process.env.API_BASE_URL ?? '',
-    user: process.env.USER ?? '',
-    password: process.env.PASSWORD ?? '',
+    user: process.env.UI_USER ?? '',
+    password: process.env.UI_PASSWORD ?? '',
     apiLogin: process.env.API_LOGIN ?? '',
     apiPassword: process.env.API_PASSWORD ?? '',
     apiKey: process.env.API_KEY ?? '',
@@ -23,8 +23,8 @@ const configs: Record<EnvironmentName, EnvConfig> = {
   prod: {
     baseUrl: process.env.BASE_URL ?? '',
     apiBaseUrl: process.env.API_BASE_URL ?? '',
-    user: process.env.USER ?? '',
-    password: process.env.PASSWORD ?? '',
+    user: process.env.UI_USER ?? '',
+    password: process.env.UI_PASSWORD ?? '',
     apiLogin: process.env.API_LOGIN ?? '',
     apiPassword: process.env.API_PASSWORD ?? '',
     apiKey: process.env.API_KEY ?? '',

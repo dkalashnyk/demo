@@ -91,8 +91,8 @@ jobs:
           API_KEY: ${{ secrets.QA_API_KEY }}
           API_LOGIN: ${{ secrets.QA_API_LOGIN }}
           API_PASSWORD: ${{ secrets.QA_API_PASSWORD }}
-          UI_USER: ${{ secrets.QA_USER }}
-          UI_PASSWORD: ${{ secrets.QA_PASSWORD }}
+          UI_USER: ${{ secrets.QA_UI_USER }}
+          UI_PASSWORD: ${{ secrets.QA_UI_PASSWORD }}
 
       - name: Upload UI test results
         if: always()
@@ -136,5 +136,5 @@ jobs:
           API_KEY: ${{ secrets.QA_API_KEY }}
           API_LOGIN: ${{ secrets.QA_API_LOGIN }}
           API_PASSWORD: ${{ secrets.QA_API_PASSWORD }}
-          UI_USER: ${{ secrets.QA_USER }}
-          UI_PASSWORD: ${{ secrets.QA_PASSWORD }}
+          UI_USER: ${{ secrets.QA_UI_USER }}
+          UI_PASSWORD: ${{ secrets.QA_UI_PASSWORD }}
