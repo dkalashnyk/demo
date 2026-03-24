@@ -40,6 +40,16 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixels: 100,
+      threshold: 0.05,
+      animations: 'disabled',
+    },
+  },
+
+  snapshotPathTemplate: './tests/__snapshots__/{testFilePath}/{arg}{ext}',
+
   /* Configure projects for major browsers */
   projects: [
     {
@@ -67,6 +77,13 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/ui.json' },
       grep: /@ui/,
       testDir: './tests/UI',
+      dependencies: ['setup'],
+    },
+    {
+      name: 'visual',
+      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/ui.json' },
+      grep: /@visual/,
+      testDir: './tests/UI/Visual',
       dependencies: ['setup'],
     },
 
