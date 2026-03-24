@@ -71,7 +71,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - run: npm ci
+
+      - name: Install Java
+        if: always()
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run UI tests
         run: npm run test:ci:ui
