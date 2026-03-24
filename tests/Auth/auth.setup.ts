@@ -10,7 +10,7 @@ import { env } from '../../config/env';
 const UI_AUTH_FILE = 'playwright/.auth/ui.json';
 const API_AUTH_FILE = 'playwright/.auth/api.json';
 
-setup('Authenticate UI', async ({ page }) => {
+setup('Auth UI', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const productsPage = new ProductsPage(page);
 
@@ -26,7 +26,7 @@ setup('Authenticate UI', async ({ page }) => {
   await page.context().storageState({ path: UI_AUTH_FILE });
 });
 
-setup('Authenticate API', async () => {
+setup('Auth API', async () => {
   await allure.epic('Auth');
   await allure.feature('API Authentication');
 
