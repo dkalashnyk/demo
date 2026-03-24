@@ -15,6 +15,7 @@ import { env } from './config/env';
  */
 export default defineConfig({
   testDir: './tests',
+  snapshotDir: './tests/__snapshots__',
   timeout: 10000,
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -47,8 +48,6 @@ export default defineConfig({
       animations: 'disabled',
     },
   },
-
-  snapshotPathTemplate: './tests/__snapshots__/{testFilePath}/{arg}{ext}',
 
   /* Configure projects for major browsers */
   projects: [
