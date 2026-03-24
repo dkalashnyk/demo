@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","782","Auth UI","setup","2026-03-24","passed","2026-03-24","","Auth/auth.setup.ts","",""
+"","5599","@visual Visual test for purchasing a product","visual","2026-03-24","failed","2026-03-24","Visual checkout","UI/Visual/checkout.visual.spec.ts","",""
+"","868","Auth API","setup","2026-03-24","passed","2026-03-24","","Auth/auth.setup.ts","",""
