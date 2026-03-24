@@ -11,7 +11,7 @@ import usersApi, { buildUser } from '../../../src/api/users.api';
 const p = PRODUCTS.TC03;
 
 test.describe('Visual checkout', () => {
-  test('@ui @visual Visual test for purchasing a product', async ({ page, api, ctx }) => {
+  test('@visual Visual test for purchasing a product', async ({ page, api, ctx }) => {
     await allure.epic('Web App');
     await allure.feature('Visual Testing');
     await allure.story('Purchase product');
