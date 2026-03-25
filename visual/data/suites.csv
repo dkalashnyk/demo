@@ -1,4 +1,4 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","810","Auth UI","setup","2026-03-24","passed","2026-03-24","","Auth/auth.setup.ts","",""
-"","597","Auth API","setup","2026-03-24","passed","2026-03-24","","Auth/auth.setup.ts","",""
-"","3648","@visual Visual test for purchasing a product","visual","2026-03-24","passed","2026-03-24","Visual checkout","UI/Visual/checkout.visual.spec.ts","",""
+"","836","Auth API","setup","2026-03-25","passed","2026-03-25","","Auth/auth.setup.ts","",""
+"","747","Auth UI","setup","2026-03-25","passed","2026-03-25","","Auth/auth.setup.ts","",""
+"","3352","@visual Visual test for purchasing a product","visual","2026-03-25","passed","2026-03-25","Visual checkout","UI/Visual/checkout.visual.spec.ts","",""
