@@ -4,14 +4,14 @@ import { BasePage } from './BasePage';
 import { Header } from './components/Header';
 
 export class ProductsPage extends BasePage {
+  readonly header: Header;
+
+  private readonly products = this.page.getByTestId('inventory-item');
+
   constructor(page: Page) {
     super(page);
     this.header = new Header(page);
   }
-
-  readonly header: Header;
-
-  private readonly products = this.page.getByTestId('inventory-item');
 
   private productItem(name: string): Locator {
     return this.products.filter({
@@ -19,27 +19,27 @@ export class ProductsPage extends BasePage {
     });
   }
 
-  productPrice(name: string): Locator {
+  private productPrice(name: string): Locator {
     return this.productItem(name).getByTestId('inventory-item-price');
   }
 
-  productDescription(name: string): Locator {
+  private productDescription(name: string): Locator {
     return this.productItem(name).getByTestId('inventory-item-desc');
   }
 
-  productImage(name: string): Locator {
+  private productImage(name: string): Locator {
     return this.productItem(name).locator('.inventory_item_img').getByRole('img');
   }
 
-  addItemToCartButton(name: string): Locator {
+  private addItemToCartButton(name: string): Locator {
     return this.productItem(name).getByRole('button', { name: 'Add to cart' });
   }
 
-  removeItemFromCartButton(name: string): Locator {
+  private removeItemFromCartButton(name: string): Locator {
     return this.productItem(name).getByRole('button', { name: 'Remove' });
   }
 
-  async openProductsPage(): Promise<void> {
+  async open(): Promise<void> {
     await this.page.goto('/inventory.html');
   }
 

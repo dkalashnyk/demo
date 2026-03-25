@@ -8,15 +8,19 @@ export class CartPage extends BasePage {
   readonly header: Header;
   readonly cartTable: CartTable;
 
+  private readonly checkoutButton = this.page.getByTestId('checkout');
+
   constructor(page: Page) {
     super(page);
     this.header = new Header(page);
     this.cartTable = new CartTable(page);
   }
 
-  private readonly checkoutButton = this.page.getByTestId('checkout');
+  async open(): Promise<void> {
+    await this.page.goto('/cart.html');
+  }
 
-  async openCartPage(): Promise<void> {
+  async openViaHeader(): Promise<void> {
     await this.header.clickCartIcon();
   }
 
@@ -25,7 +29,7 @@ export class CartPage extends BasePage {
     await this.header.expectTitle('Your Cart');
   }
 
-  async openCheckoutPage(): Promise<void> {
+  async proceedToCheckout(): Promise<void> {
     await this.checkoutButton.click();
   }
 

@@ -7,21 +7,21 @@ export class CartTable {
     this.cartItems = this.page.getByTestId('inventory-item');
   }
 
-  cartItem(name: string): Locator {
+  private cartItem(name: string): Locator {
     return this.cartItems.filter({
       has: this.page.getByTestId('inventory-item-name').filter({ hasText: name }),
     });
   }
 
-  cartItemDescription(name: string): Locator {
+  private cartItemDescription(name: string): Locator {
     return this.cartItem(name).getByTestId('inventory-item-desc');
   }
 
-  cartItemPrice(name: string): Locator {
+  private cartItemPrice(name: string): Locator {
     return this.cartItem(name).getByTestId('inventory-item-price');
   }
 
-  cartItemQuantity(name: string): Locator {
+  private cartItemQuantity(name: string): Locator {
     return this.cartItem(name).getByTestId('item-quantity');
   }
 

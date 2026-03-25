@@ -35,7 +35,7 @@ test.describe('Visual checkout', () => {
 
     try {
       await allure.step('Open Products page', async () => {
-        await productsPage.openProductsPage();
+        await productsPage.open();
         await productsPage.assertVisual();
       });
 
@@ -45,13 +45,13 @@ test.describe('Visual checkout', () => {
       });
 
       await allure.step('Verify cart contents', async () => {
-        await cartPage.openCartPage();
+        await cartPage.open();
         await cartPage.assertOnCartPage();
         await cartPage.assertVisual();
       });
 
       await allure.step('Open Checkout page', async () => {
-        await cartPage.openCheckoutPage();
+        await cartPage.proceedToCheckout();
         await checkoutStepOnePage.assertOnCheckoutPage();
         await checkoutStepOnePage.assertVisual();
       });

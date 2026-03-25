@@ -1,11 +1,13 @@
 import { Page, Locator, expect } from '@playwright/test';
 
 export class Header {
-  private readonly cartIcon: Locator;
+  private readonly cartLink: Locator;
+  private readonly cartBadge: Locator;
   private readonly title: Locator;
 
   constructor(private readonly page: Page) {
-    this.cartIcon = this.page.getByTestId('shopping-cart-badge');
+    this.cartLink = this.page.getByTestId('shopping-cart-link');
+    this.cartBadge = this.page.getByTestId('shopping-cart-badge');
     this.title = this.page.getByTestId('title');
   }
 
@@ -14,10 +16,14 @@ export class Header {
   }
 
   async expectCartCount(count: number): Promise<void> {
-    await expect(this.cartIcon).toHaveText(String(count));
+    if (count === 0) {
+      await expect(this.cartBadge).not.toBeVisible();
+    } else {
+      await expect(this.cartBadge).toHaveText(String(count));
+    }
   }
 
   async clickCartIcon(): Promise<void> {
-    await this.cartIcon.click();
+    await this.cartLink.click();
   }
 }

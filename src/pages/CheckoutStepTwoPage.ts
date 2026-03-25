@@ -6,18 +6,18 @@ import { CartTable } from './components/CartTable';
 
 export class CheckoutStepTwoPage extends BasePage {
   readonly header: Header;
-  readonly cartTable = new CartTable(this.page);
+  readonly cartTable: CartTable;
+
+  private readonly finishButton = this.page.getByTestId('finish');
+  private readonly itemTotalLabel = this.page.getByTestId('subtotal-label');
+  private readonly taxTotalLabel = this.page.getByTestId('tax-label');
+  private readonly totalLabel = this.page.getByTestId('total-label');
 
   constructor(page: Page) {
     super(page);
     this.header = new Header(page);
     this.cartTable = new CartTable(page);
   }
-
-  private readonly finishButton = this.page.getByTestId('finish');
-  private readonly itemTotalLabel = this.page.getByTestId('subtotal-label');
-  private readonly taxTotalLabel = this.page.getByTestId('tax-label');
-  private readonly totalLabel = this.page.getByTestId('total-label');
 
   async assertOnCheckoutPage(): Promise<void> {
     await this.expectUrlContains('/checkout-step-two.html');
@@ -28,11 +28,18 @@ export class CheckoutStepTwoPage extends BasePage {
     await this.finishButton.click();
   }
 
-  async expectNumberOfItemsInCart(expected: number): Promise<void> {
-    await this.cartTable.expectNumberOfCartItems(expected);
+  async expectNumberOfCartItems(count: number): Promise<void> {
+    await this.cartTable.expectNumberOfCartItems(count);
   }
 
   async expectItemInCart(
+    name: string,
+    expected: { price: string; description?: string; quantity: string },
+  ): Promise<void> {
+    await this.cartTable.expectCartItemVisible(name, expected);
+  }
+
+  async expectCartItemVisible(
     name: string,
     expected: { price: string; description?: string; quantity: string },
   ): Promise<void> {

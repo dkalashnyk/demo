@@ -35,7 +35,7 @@ test.describe('E2E User purchases a product', () => {
 
     try {
       await allure.step('Open Products page', async () => {
-        await productsPage.openProductsPage();
+        await productsPage.open();
         await productsPage.assertOnProductsPage();
       });
 
@@ -50,7 +50,7 @@ test.describe('E2E User purchases a product', () => {
       });
 
       await allure.step('Verify cart contents', async () => {
-        await cartPage.openCartPage();
+        await cartPage.open();
         await cartPage.assertOnCartPage();
         await cartPage.expectNumberOfCartItems(1);
         await cartPage.expectCartItemVisible(p.name, {
@@ -61,7 +61,7 @@ test.describe('E2E User purchases a product', () => {
       });
 
       await allure.step('Open Checkout page', async () => {
-        await cartPage.openCheckoutPage();
+        await cartPage.proceedToCheckout();
         await checkoutStepOnePage.assertOnCheckoutPage();
       });
 
@@ -76,7 +76,7 @@ test.describe('E2E User purchases a product', () => {
       });
 
       await allure.step('Verify order details', async () => {
-        await checkoutStepTwoPage.expectNumberOfItemsInCart(1);
+        await checkoutStepTwoPage.expectNumberOfCartItems(1);
         await checkoutStepTwoPage.expectItemInCart(p.name, {
           price: p.price,
           description: p.description,

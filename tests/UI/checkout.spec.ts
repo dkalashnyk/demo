@@ -11,10 +11,11 @@ import { CheckoutSummaryPage } from '../../src/pages/CheckoutSummaryPage';
 const p = PRODUCTS.TC02;
 
 test.describe('User purchases a product', () => {
-  test('@ui TC02 User purchases one product', async ({ page, ctx }) => {
+  test('@ui TC02 User purchases one product', async ({ page }) => {
     await allure.epic('Web App');
     await allure.feature('Checkout');
     await allure.story('Purchase product');
+
     const productsPage = new ProductsPage(page);
     const cartPage = new CartPage(page);
     const checkoutStepOnePage = new CheckoutStepOnePage(page);
@@ -22,10 +23,9 @@ test.describe('User purchases a product', () => {
     const checkoutSummaryPage = new CheckoutSummaryPage(page);
 
     const checkoutData = CheckoutFactory.create();
-    ctx.set('checkout', checkoutData);
 
     await allure.step('Open Products page', async () => {
-      await productsPage.openProductsPage();
+      await productsPage.open();
       await productsPage.assertOnProductsPage();
     });
 
@@ -40,7 +40,7 @@ test.describe('User purchases a product', () => {
     });
 
     await allure.step('Verify cart contents', async () => {
-      await cartPage.openCartPage();
+      await cartPage.open();
       await cartPage.assertOnCartPage();
       await cartPage.expectNumberOfCartItems(1);
       await cartPage.expectCartItemVisible(p.name, {
@@ -51,13 +51,13 @@ test.describe('User purchases a product', () => {
     });
 
     await allure.step('Open Checkout page', async () => {
-      await cartPage.openCheckoutPage();
+      await cartPage.proceedToCheckout();
       await checkoutStepOnePage.assertOnCheckoutPage();
     });
 
     await allure.step('Fill in Checkout information', async () => {
-      await checkoutStepOnePage.fillRandomCheckoutInformation(checkoutData);
-      // const context = ctx.require('checkout');
+      const { firstName, lastName, zip } = checkoutData;
+      await checkoutStepOnePage.fillCheckoutInformation(firstName, lastName, zip);
     });
 
     await allure.step('Open Checkout Step 2', async () => {
@@ -66,7 +66,7 @@ test.describe('User purchases a product', () => {
     });
 
     await allure.step('Verify order details', async () => {
-      await checkoutStepTwoPage.expectNumberOfItemsInCart(1);
+      await checkoutStepTwoPage.expectNumberOfCartItems(1);
       await checkoutStepTwoPage.expectItemInCart(p.name, {
         price: p.price,
         description: p.description,
