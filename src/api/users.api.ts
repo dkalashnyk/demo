@@ -2,6 +2,8 @@ import { APIRequestContext } from '@playwright/test';
 import { z } from 'zod';
 import { faker } from '@faker-js/faker';
 
+import { ENDPOINTS } from './endpoints';
+
 export const UserDataSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
@@ -67,19 +69,19 @@ export function buildUser(overrides: Partial<CreateUserPayload> = {}): CreateUse
 
 const usersApi = {
   async createUser(api: APIRequestContext, payload: CreateUserPayload) {
-    const res = await api.post('/collections/users/objects/', { data: payload });
+    const res = await api.post(ENDPOINTS.users, { data: payload });
     const json = await res.json();
     return { res, json, parsed: UserSchema.safeParse(json) };
   },
 
   async getUser(api: APIRequestContext, id: number) {
-    const res = await api.get(`/collections/users/objects/${id}`);
+    const res = await api.get(`${ENDPOINTS.users}/${id}`);
     const json = await res.json();
     return { res, json, parsed: UserSchema.safeParse(json) };
   },
 
   async deleteUser(api: APIRequestContext, id: number) {
-    const res = await api.delete(`/collections/users/objects/${id}`);
+    const res = await api.delete(`${ENDPOINTS.users}/${id}`);
     const json = await res.json();
     return { res, json, parsed: DeleteResponseSchema.safeParse(json) };
   },
@@ -89,7 +91,7 @@ const usersApi = {
    * malformed / missing-field payloads without TypeScript blocking them.
    */
   async createUserRaw(api: APIRequestContext, payload: Record<string, unknown>) {
-    const res = await api.post('/collections/users/objects/', { data: payload });
+    const res = await api.post(ENDPOINTS.users, { data: payload });
     const json = await res.json();
     return { res, json, parsedError: ErrorSchema.safeParse(json) };
   },
@@ -98,7 +100,7 @@ const usersApi = {
    * Accepts a string so tests can pass non-numeric IDs (e.g. "abc", "-1").
    */
   async getUserRaw(api: APIRequestContext, id: number | string) {
-    const res = await api.get(`/collections/users/objects/${id}`);
+    const res = await api.get(`${ENDPOINTS.users}/${id}`);
     const json = await res.json();
     return { res, json, parsedError: ErrorSchema.safeParse(json) };
   },

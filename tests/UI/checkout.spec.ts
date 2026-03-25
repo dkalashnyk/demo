@@ -1,7 +1,7 @@
 import { test } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
 import { PRODUCTS } from '../../src/test-data/product';
-import { CheckoutFactory } from '../../src/test-data/checkoutFactory';
+import { CheckoutFactory, CheckoutFormData } from '../../src/test-data/checkoutFactory';
 import { ProductsPage } from '../../src/pages/ProductsPage';
 import { CartPage } from '../../src/pages/CartPage';
 import { CheckoutStepOnePage } from '../../src/pages/CheckoutStepOnePage';
@@ -11,7 +11,7 @@ import { CheckoutSummaryPage } from '../../src/pages/CheckoutSummaryPage';
 const p = PRODUCTS.TC02;
 
 test.describe('User purchases a product', () => {
-  test('@ui TC02 User purchases one product', async ({ page }) => {
+  test('@ui TC02 User purchases one product', async ({ page, ctx }) => {
     await allure.epic('Web App');
     await allure.feature('Checkout');
     await allure.story('Purchase product');
@@ -23,6 +23,7 @@ test.describe('User purchases a product', () => {
     const checkoutSummaryPage = new CheckoutSummaryPage(page);
 
     const checkoutData = CheckoutFactory.create();
+    ctx.set<CheckoutFormData>('checkout', checkoutData);
 
     await allure.step('Open Products page', async () => {
       await productsPage.open();
@@ -56,7 +57,7 @@ test.describe('User purchases a product', () => {
     });
 
     await allure.step('Fill in Checkout information', async () => {
-      const { firstName, lastName, zip } = checkoutData;
+      const { firstName, lastName, zip } = ctx.require<CheckoutFormData>('checkout');
       await checkoutStepOnePage.fillCheckoutInformation(firstName, lastName, zip);
     });
 

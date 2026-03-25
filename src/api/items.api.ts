@@ -2,6 +2,8 @@ import { APIRequestContext } from '@playwright/test';
 import { z } from 'zod';
 import { faker } from '@faker-js/faker';
 
+import { ENDPOINTS } from './endpoints';
+
 export const ItemDataSchema = z
   .object({
     year: z.number().int().optional(),
@@ -78,19 +80,19 @@ export function buildItem(overrides: Partial<CreateItemPayload> = {}): CreateIte
 
 const itemsApi = {
   async createItem(api: APIRequestContext, payload: CreateItemPayload) {
-    const res = await api.post('/objects', { data: payload });
+    const res = await api.post(ENDPOINTS.items, { data: payload });
     const json = await res.json();
     return { res, json, parsed: CreatedItemSchema.safeParse(json) };
   },
 
   async getItem(api: APIRequestContext, id: string) {
-    const res = await api.get(`/objects/${id}`);
+    const res = await api.get(`${ENDPOINTS.items}/${id}`);
     const json = await res.json();
     return { res, json, parsed: ItemSchema.safeParse(json) };
   },
 
   async deleteItem(api: APIRequestContext, id: string) {
-    const res = await api.delete(`/objects/${id}`);
+    const res = await api.delete(`${ENDPOINTS.items}/${id}`);
     const json = await res.json();
     return { res, json, parsed: DeleteResponseSchema.safeParse(json) };
   },
@@ -100,19 +102,19 @@ const itemsApi = {
    * malformed / missing-field payloads without TypeScript blocking them.
    */
   async createItemRaw(api: APIRequestContext, payload: Record<string, unknown>) {
-    const res = await api.post('/objects', { data: payload });
+    const res = await api.post(ENDPOINTS.items, { data: payload });
     const json = await res.json();
     return { res, json, parsedError: ErrorSchema.safeParse(json) };
   },
 
   async getItemRaw(api: APIRequestContext, id: string) {
-    const res = await api.get(`/objects/${id}`);
+    const res = await api.get(`${ENDPOINTS.items}/${id}`);
     const json = await res.json();
     return { res, json, parsedError: ErrorSchema.safeParse(json) };
   },
 
   async deleteItemRaw(api: APIRequestContext, id: string) {
-    const res = await api.delete(`/objects/${id}`);
+    const res = await api.delete(`${ENDPOINTS.items}/${id}`);
     const json = await res.json();
     return { res, json, parsedError: ErrorSchema.safeParse(json) };
   },

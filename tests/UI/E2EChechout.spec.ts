@@ -7,6 +7,7 @@ import { CheckoutStepOnePage } from '../../src/pages/CheckoutStepOnePage';
 import { CheckoutStepTwoPage } from '../../src/pages/CheckoutStepTwoPage';
 import { CheckoutSummaryPage } from '../../src/pages/CheckoutSummaryPage';
 import usersApi, { buildUser } from '../../src/api/users.api';
+import { CheckoutFormData } from '../../src/test-data/checkoutFactory';
 
 const p = PRODUCTS.TC03;
 
@@ -16,22 +17,21 @@ test.describe('E2E User purchases a product', () => {
     await allure.feature('Checkout');
     await allure.story('Purchase product');
 
-    const payload = buildUser();
-    const { res: createRes, json: createdUser } = await usersApi.createUser(api, payload);
-    expect(createRes.status()).toBe(200);
-
-    // Store in context for use across steps
-    ctx.set('checkout', {
-      firstName: payload.data.firstName,
-      lastName: payload.data.lastName,
-      zip: payload.data.zip,
-    });
-
     const productsPage = new ProductsPage(page);
     const cartPage = new CartPage(page);
     const checkoutStepOnePage = new CheckoutStepOnePage(page);
     const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
     const checkoutSummaryPage = new CheckoutSummaryPage(page);
+
+    const payload = buildUser();
+    const { res: createRes, json: createdUser } = await usersApi.createUser(api, payload);
+    expect(createRes.status()).toBe(200);
+
+    ctx.set<CheckoutFormData>('checkout', {
+      firstName: payload.data.firstName,
+      lastName: payload.data.lastName,
+      zip: payload.data.zip,
+    });
 
     try {
       await allure.step('Open Products page', async () => {
@@ -66,7 +66,7 @@ test.describe('E2E User purchases a product', () => {
       });
 
       await allure.step('Fill in Checkout information', async () => {
-        const { firstName, lastName, zip } = ctx.require('checkout');
+        const { firstName, lastName, zip } = ctx.require<CheckoutFormData>('checkout');
         await checkoutStepOnePage.fillCheckoutInformation(firstName, lastName, zip);
       });
 

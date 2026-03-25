@@ -5,12 +5,18 @@ test('@api @smoke Create a user', async ({ api }) => {
   const payload = buildUser();
   const { res, json, parsed } = await usersApi.createUser(api, payload);
 
-  expect(res.status()).toBe(200);
+  try {
+    expect(res.status()).toBe(200);
 
-  expect(parsed.success, `Response did not match UserSchema: ${JSON.stringify(parsed)}`).toBe(true);
+    expect(parsed.success, `Response did not match UserSchema: ${JSON.stringify(parsed)}`).toBe(
+      true,
+    );
 
-  expect(json).toMatchObject({
-    name: payload.name,
-    data: payload.data,
-  });
+    expect(json).toMatchObject({
+      name: payload.name,
+      data: payload.data,
+    });
+  } finally {
+    await usersApi.deleteUser(api, json.id);
+  }
 });

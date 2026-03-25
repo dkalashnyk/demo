@@ -7,7 +7,7 @@ export interface ProdItem {
   total: string;
 }
 
-export const PRODUCTS = {
+export const PRODUCTS: Record<string, ProdItem> = {
   TC02: {
     name: 'Sauce Labs Fleece Jacket',
     description:
@@ -16,7 +16,7 @@ export const PRODUCTS = {
     img: 'Sauce Labs Fleece Jacket',
     tax: '$4.00',
     total: '$53.99',
-  } satisfies ProdItem,
+  },
   TC03: {
     name: 'Sauce Labs Bolt T-Shirt',
     description:
@@ -25,5 +25,5 @@ export const PRODUCTS = {
     img: 'Sauce Labs Bolt T-Shirt',
     tax: '$1.28',
     total: '$17.27',
-  } satisfies ProdItem,
-} as const;
+  },
+};

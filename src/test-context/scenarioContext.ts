@@ -1,27 +1,19 @@
-export interface CheckoutFormData {
-  firstName: string;
-  lastName: string;
-  zip: string;
-}
-
-export type ScenarioData = {
-  checkout?: CheckoutFormData;
-};
-
 export class ScenarioContext {
-  private data: ScenarioData = {};
+  private data: Map<string, unknown> = new Map();
 
-  set<K extends keyof ScenarioData>(key: K, value: ScenarioData[K]) {
-    this.data[key] = value;
+  set<T>(key: string, value: T): void {
+    this.data.set(key, value);
   }
 
-  get<K extends keyof ScenarioData>(key: K): ScenarioData[K] {
-    return this.data[key];
+  get<T>(key: string): T | undefined {
+    return this.data.get(key) as T | undefined;
   }
 
-  require<K extends keyof ScenarioData>(key: K): NonNullable<ScenarioData[K]> {
-    const value = this.data[key];
-    if (!value) throw new Error(`ScenarioContext: missing required key "${String(key)}"`);
-    return value as NonNullable<ScenarioData[K]>;
+  require<T>(key: string): T {
+    const value = this.data.get(key);
+    if (value === undefined) {
+      throw new Error(`ScenarioContext: missing required key "${key}"`);
+    }
+    return value as T;
   }
 }

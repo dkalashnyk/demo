@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepare": "husky",
     "test:qa": "npm run report:allure:clean-results && docker run --rm -w /app --env TEST_ENV=qa --env-file ./config/.env.qa -v \"%cd%:/app\" demo",
     "test:qa:all": "npm run test:qa -- --project all",
     "test:qa:smoke": "npm run test:qa -- --project smoke",
@@ -23,13 +24,20 @@
     "test:ci:visual": "playwright test --project=setup --project=visual",
     "test:ci:update-snapshots": "playwright test --project=setup --project=visual --update-snapshots",
     "report:default": "npx playwright show-report",
-    "report:allure:clean-results": "rmdir /s /q allure-results 2>nul || exit 0",
+    "report:allure:clean-results": "node -e \"require('fs').rmSync('allure-results', {recursive:true, force:true})\"",
     "report:allure:seed-history": "node scripts/allure-history.mjs seed",
     "report:allure:trim-history": "node scripts/allure-history.mjs trim",
     "report:allure:generate": "npm run report:allure:seed-history && docker run --rm -v \"%cd%:/work\" frankescobar/allure-docker-service allure generate /work/allure-results -o /work/allure-report --clean && npm run report:allure:trim-history",
     "report:allure:open": "docker run --rm -p 4040:4040 -v \"%cd%:/work\" frankescobar/allure-docker-service allure open /work/allure-report -h 0.0.0.0 -p 4040",
     "format": "prettier --write .",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -47,6 +55,9 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-playwright": "^2.10.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
     "typescript-eslint": "^8.53.1"
   },

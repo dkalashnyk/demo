@@ -1,5 +1,6 @@
 import fs from 'fs';
 
+import { ENDPOINTS } from '../../src/api/endpoints';
 import { test as setup, expect } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
 import { createApiContext } from '../../src/fixtures/createApiContext';
@@ -26,6 +27,8 @@ setup('Auth UI', async ({ page }) => {
   await page.context().storageState({ path: UI_AUTH_FILE });
 });
 
+setup.describe.configure({ retries: 2 });
+
 setup('Auth API', async () => {
   await allure.epic('Auth');
   await allure.feature('API Authentication');
@@ -33,7 +36,7 @@ setup('Auth API', async () => {
   const apiContext = await createApiContext();
 
   await allure.step('POST /auth/login', async () => {
-    const res = await apiContext.post('/auth/login', {
+    const res = await apiContext.post(ENDPOINTS.auth, {
       data: { login: env.apiLogin, password: env.apiPassword },
     });
     expect(res.status()).toBe(200);
