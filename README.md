@@ -1,40 +1,56 @@
 # Demo — Playwright Test Automation Framework
 
-A full-stack test automation framework built with [Playwright](https://playwright.dev/), covering API, UI, and Visual testing for [SauceDemo](https://www.saucedemo.com/) with [restful-api.dev](https://api.restful-api.dev) as the backend API under test.
+![CI](https://github.com/dkalashnyk/demo/actions/workflows/tests.yml/badge.svg)
+
+A full-stack test automation framework built with [Playwright](https://playwright.dev/), covering API, UI, and Visual regression testing for [SauceDemo](https://www.saucedemo.com/) with [restful-api.dev](https://api.restful-api.dev) as the backend API under test.
 
 ---
 
 ## Tech Stack
 
-| Tool                                                  | Purpose                                      |
-| ----------------------------------------------------- | -------------------------------------------- |
-| [Playwright](https://playwright.dev/)                 | Test runner, browser automation, API testing |
-| [TypeScript](https://www.typescriptlang.org/)         | Language                                     |
-| [Zod](https://zod.dev/)                               | API response schema validation               |
-| [Faker.js](https://fakerjs.dev/)                      | Test data generation                         |
-| [Allure](https://allurereport.org/)                   | Test reporting                               |
-| [Docker](https://www.docker.com/)                     | Consistent local test execution              |
-| [GitHub Actions](https://github.com/features/actions) | CI/CD pipeline                               |
+| Tool                                                                                                   | Purpose                                      |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| [Playwright](https://playwright.dev/) `v1.58`                                                          | Test runner, browser automation, API testing |
+| [TypeScript](https://www.typescriptlang.org/)                                                          | Language                                     |
+| [Zod](https://zod.dev/)                                                                                | API response schema validation               |
+| [Faker.js](https://fakerjs.dev/)                                                                       | Test data generation                         |
+| [Allure](https://allurereport.org/)                                                                    | Test reporting                               |
+| [Docker](https://www.docker.com/)                                                                      | Consistent local test execution              |
+| [GitHub Actions](https://github.com/features/actions)                                                  | CI/CD pipeline                               |
+| [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) | Pre-commit hooks                             |
+| [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/)                                       | Code quality and formatting                  |
 
 ---
 
 ## Project Structure
 
 ```
+├── .github/
+│   └── workflows/
+│       ├── tests.yml               # Main CI orchestrator (lint → api → ui → visual)
+│       └── run-tests.yml           # Reusable workflow for all test jobs
+├── .husky/
+│   └── pre-commit                  # Runs lint-staged before every commit
 ├── config/
-│   ├── env.ts                  # Environment config (qa/prod)
-│   ├── .env.qa                 # Local QA environment variables
-│   └── .env.prod               # Local prod environment variables
+│   ├── env.ts                      # Typed environment config (qa/prod)
+│   ├── .env.qa                     # Local QA environment variables (gitignored)
+│   └── .env.prod                   # Local prod environment variables (gitignored)
+├── scripts/
+│   └── allure-history.mjs          # Allure history seed/trim scripts
 ├── src/
 │   ├── api/
-│   │   ├── items.api.ts        # Items API methods + schemas
-│   │   └── users.api.ts        # Users API methods + schemas
+│   │   ├── endpoints.ts            # Centralized API endpoint constants
+│   │   ├── items.api.ts            # Items API methods + Zod schemas
+│   │   └── users.api.ts            # Users API methods + Zod schemas
 │   ├── fixtures/
-│   │   ├── test.ts             # Extended Playwright fixtures (page + api + ctx)
-│   │   ├── api.fixtures.ts     # API-only fixtures with Allure integration
-│   │   └── createApiContext.ts # Shared API context factory
+│   │   ├── test.ts                 # Extended Playwright fixtures (page + api + ctx)
+│   │   ├── api.fixtures.ts         # API-only fixtures with Allure integration
+│   │   ├── allure-api.client.ts    # Allure-wrapped API request context
+│   │   └── createApiContext.ts     # Shared API context factory (x-api-key + Bearer)
+│   ├── mappers/
+│   │   └── user.mapper.ts          # Maps API response types to UI form data types
 │   ├── pages/
-│   │   ├── BasePage.ts         # Base class with shared page methods
+│   │   ├── BasePage.ts             # Abstract base: assertVisual(), expectUrlContains()
 │   │   ├── LoginPage.ts
 │   │   ├── ProductsPage.ts
 │   │   ├── CartPage.ts
@@ -42,34 +58,39 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 │   │   ├── CheckoutStepTwoPage.ts
 │   │   ├── CheckoutSummaryPage.ts
 │   │   └── components/
-│   │       ├── Header.ts
-│   │       └── CartTable.ts
+│   │       ├── Header.ts           # Cart icon, title, cart badge
+│   │       └── CartTable.ts        # Cart item assertions
 │   ├── test-context/
-│   │   └── scenarioContext.ts  # Generic typed context for sharing data across steps
+│   │   └── scenarioContext.ts      # Generic typed key-value store for cross-step data
 │   ├── test-data/
-│   │   ├── checkoutFactory.ts  # Checkout form data factory + builder
-│   │   └── product.ts          # Static product test data
+│   │   ├── checkoutFactory.ts      # CheckoutFormData interface + factory + builder
+│   │   └── product.ts              # Typed static product test data (ProductData)
 │   └── utils/
-│       └── allure.ts           # Allure step/label helpers
+│       └── allure.ts               # Allure step/epic/feature/story helpers
 ├── tests/
 │   ├── Auth/
-│   │   └── auth.setup.ts       # UI + API authentication setup
+│   │   └── auth.setup.ts           # UI storageState + API Bearer token setup
 │   ├── API/
-│   │   ├── item/               # Item CRUD API tests
-│   │   └── user/               # User CRUD API tests
+│   │   ├── item/
+│   │   │   ├── createItem.spec.ts
+│   │   │   ├── deleteItem.spec.ts
+│   │   │   └── getItem.spec.ts
+│   │   └── user/
+│   │       ├── createUser.spec.ts
+│   │       └── getUser.spec.ts
 │   ├── UI/
-│   │   ├── checkout.spec.ts    # UI checkout flow tests
-│   │   ├── E2ECheckout.spec.ts # E2E tests with API setup/teardown
+│   │   ├── checkout.spec.ts        # UI checkout flow (no API dependency)
+│   │   ├── E2ECheckout.spec.ts     # E2E checkout with API user create/delete
 │   │   └── Visual/
 │   │       └── checkout.visual.spec.ts
-│   └── __snapshots__/          # Visual test baselines (committed to repo)
-├── .github/
-│   └── workflows/
-│       ├── tests.yml           # Main CI workflow
-│       └── run-tests.yml       # Reusable workflow
+│   └── __snapshots__/              # Visual baselines — committed to repo
+├── .gitignore
+├── .prettierrc
 ├── Dockerfile
+├── eslint.config.mjs
+├── package.json
 ├── playwright.config.ts
-└── package.json
+└── tsconfig.json
 ```
 
 ---
@@ -77,7 +98,7 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) v20+
-- [Docker](https://www.docker.com/) (for local test runs)
+- [Docker](https://www.docker.com/) (required for local test runs)
 - [npm](https://www.npmjs.com/) v11+
 
 ---
@@ -91,13 +112,13 @@ git clone https://github.com/dkalashnyk/demo.git
 cd demo
 ```
 
-**2. Install dependencies:**
+**2. Install dependencies** (also sets up Husky pre-commit hooks automatically):
 
 ```bash
 npm install
 ```
 
-**3. Create environment file:**
+**3. Create your environment file:**
 
 ```bash
 cp config/.env.qa.example config/.env.qa
@@ -125,28 +146,17 @@ docker build -t demo .
 
 ## Running Tests
 
-All local test commands run inside Docker for consistency with CI.
+All local test commands run inside Docker for consistency with CI (Linux environment ensures visual snapshot parity).
 
 ### QA environment
 
 ```bash
-# All tests
-npm run test:qa:all
-
-# API tests only
-npm run test:qa:api
-
-# UI tests only
-npm run test:qa:ui
-
-# Smoke tests only
-npm run test:qa:smoke
-
-# Visual tests only
-npm run test:qa:visual
-
-# Update visual snapshots
-npm run test:qa:update-snapshots
+npm run test:qa:all                  # All tests
+npm run test:qa:api                  # API tests only
+npm run test:qa:ui                   # UI tests only
+npm run test:qa:smoke                # Smoke tests only (@smoke tag)
+npm run test:qa:visual               # Visual regression tests only
+npm run test:qa:update-snapshots     # Regenerate visual baselines
 ```
 
 ### Production environment
@@ -157,20 +167,51 @@ npm run test:prod:api
 npm run test:prod:ui
 npm run test:prod:smoke
 npm run test:prod:visual
+npm run test:prod:update-snapshots
 ```
 
 ---
 
 ## Test Projects
 
-| Project  | Tag       | Description                        |
-| -------- | --------- | ---------------------------------- |
-| `api`    | `@api`    | API CRUD tests — no browser        |
-| `ui`     | `@ui`     | UI functional tests                |
-| `smoke`  | `@smoke`  | Smoke subset across API + UI       |
-| `visual` | `@visual` | Visual regression tests            |
-| `all`    | —         | All UI tests                       |
-| `setup`  | —         | Auth setup (runs before UI/visual) |
+| Project  | Tag       | Scope                                       |
+| -------- | --------- | ------------------------------------------- |
+| `api`    | `@api`    | API CRUD tests — no browser required        |
+| `ui`     | `@ui`     | UI functional tests                         |
+| `smoke`  | `@smoke`  | Critical path across API + UI               |
+| `visual` | `@visual` | Visual regression tests                     |
+| `all`    | —         | All UI tests                                |
+| `setup`  | —         | Auth setup — runs before UI/visual projects |
+
+Negative tests are tagged `@negative` and run as part of their respective project (`@api @negative`, `@ui @negative`).
+
+---
+
+## Authentication
+
+The framework uses a dual authentication strategy:
+
+- **UI** — Playwright `storageState` saved to `playwright/.auth/ui.json` after login. Loaded automatically by UI/visual projects via `storageState` in `playwright.config.ts`.
+- **API** — Bearer token obtained via `POST /auth/login` and saved to `playwright/.auth/api.json`. Loaded by `createApiContext()` and injected as `Authorization: Bearer <token>` on every request alongside the static `x-api-key` header.
+
+Both are generated once in `auth.setup.ts` before any UI or visual tests run.
+
+---
+
+## Visual Testing
+
+Snapshots are stored in `tests/__snapshots__/` and committed to the repo as baselines.
+
+**Updating snapshots after intentional UI changes:**
+
+```bash
+npm run test:qa:update-snapshots
+git add tests/__snapshots__/
+git commit -m "chore: update visual snapshots"
+git push
+```
+
+> Always generate snapshots using Docker locally — running outside Docker on macOS/Windows produces OS-specific pixel differences that won't match CI (Linux).
 
 ---
 
@@ -185,82 +226,82 @@ npm run report:default
 ### Allure report (local)
 
 ```bash
-# Generate
-npm run report:allure:generate
-
-# Open
-npm run report:allure:open
-# Available at http://localhost:4040
+npm run report:allure:generate   # Generate from allure-results/
+npm run report:allure:open       # Open at http://localhost:4040
 ```
 
-### Allure report (CI)
+### Allure report (CI — GitHub Pages)
 
-Reports are published to GitHub Pages after every CI run:
+Published automatically after every CI run:
 
-- **API:** `https://dkalashnyk.github.io/demo/api/`
-- **UI:** `https://dkalashnyk.github.io/demo/ui/`
-- **Visual:** `https://dkalashnyk.github.io/demo/visual/`
+| Suite  | URL                                       |
+| ------ | ----------------------------------------- |
+| API    | https://dkalashnyk.github.io/demo/api/    |
+| UI     | https://dkalashnyk.github.io/demo/ui/     |
+| Visual | https://dkalashnyk.github.io/demo/visual/ |
 
 ---
 
-## Visual Testing
+## CI/CD Pipeline
 
-Visual snapshots are committed to the repo under `tests/__snapshots__/` and serve as baselines for comparison.
-
-**Updating snapshots** (run inside Docker to match CI Linux environment):
-
-```bash
-npm run test:qa:update-snapshots
-git add tests/__snapshots__/
-git commit -m "chore: update visual snapshots"
-git push
-```
-
-> Always update snapshots using Docker locally — running them outside Docker on macOS/Windows will produce OS-specific pixel differences that won't match CI.
-
----
-
-## CI/CD
-
-Tests run automatically on every push to `main` via GitHub Actions in this order:
+Triggered on every push to `main`. Jobs run sequentially:
 
 ```
-API Tests → UI Tests → Visual Tests
+Lint → API Tests → UI Tests → Visual Tests
 ```
 
-Each job publishes its Allure report to GitHub Pages. UI and Visual jobs are skipped if the preceding job fails.
+- **Lint** — ESLint + TypeScript checks. Blocks all test jobs if it fails.
+- **API Tests** — runs first, no browser required.
+- **UI Tests** — runs after API passes.
+- **Visual Tests** — runs after UI passes.
+
+Each test job generates and deploys an Allure report to GitHub Pages. UI and Visual jobs are skipped if their dependency fails.
+
+The reusable workflow `.github/workflows/run-tests.yml` handles all test execution logic — `tests.yml` is a pure orchestrator.
 
 ### Required GitHub Secrets
 
-| Secret            | Description                         |
-| ----------------- | ----------------------------------- |
-| `QA_API_BASE_URL` | API base URL                        |
-| `QA_API_KEY`      | Static API key (`x-api-key` header) |
-| `QA_API_LOGIN`    | API login credential                |
-| `QA_API_PASSWORD` | API password                        |
-| `QA_BASE_URL`     | UI base URL                         |
-| `QA_UI_USER`      | UI login username                   |
-| `QA_UI_PASSWORD`  | UI login password                   |
+| Secret            | Description                     |
+| ----------------- | ------------------------------- |
+| `QA_API_BASE_URL` | API base URL                    |
+| `QA_API_KEY`      | Static `x-api-key` header value |
+| `QA_API_LOGIN`    | API login credential            |
+| `QA_API_PASSWORD` | API password                    |
+| `QA_BASE_URL`     | UI base URL                     |
+| `QA_UI_USER`      | UI login username               |
+| `QA_UI_PASSWORD`  | UI login password               |
 
 ---
 
 ## Code Quality
 
 ```bash
-# Lint
-npm run lint
-
-# Format
-npm run format
+npm run lint       # ESLint
+npm run format     # Prettier
 ```
+
+**Pre-commit hook** (via Husky + lint-staged) runs ESLint and Prettier automatically on staged `.ts` files before every commit. The commit is blocked if any errors are found.
+
+**ESLint rules enforced on test files:**
+
+| Rule                                      | Level | Purpose                                 |
+| ----------------------------------------- | ----- | --------------------------------------- |
+| `playwright/no-focused-test`              | error | Prevents accidental `test.only` commits |
+| `playwright/no-skipped-test`              | warn  | Warns on `test.skip`                    |
+| `playwright/no-wait-for-timeout`          | warn  | Discourages hard waits                  |
+| `playwright/no-networkidle`               | warn  | Discourages `networkidle` waits         |
+| `playwright/no-commented-out-tests`       | warn  | Warns on commented-out tests            |
+| `@typescript-eslint/no-floating-promises` | error | Catches missing `await` on async calls  |
 
 ---
 
 ## Architecture Decisions
 
-- **Page Object Model** — all UI interactions encapsulated in page classes extending `BasePage`
-- **API layer with Zod validation** — every API response is validated against a schema at the point of the request
-- **Dual authentication** — UI session stored via Playwright `storageState`, API Bearer token persisted to `playwright/.auth/api.json`
-- **Factory pattern** — `CheckoutFactory` and `buildUser()` generate randomized test data with optional overrides
-- **ScenarioContext** — generic typed key-value store for sharing data across test steps without global state
-- **Docker-first local runs** — ensures snapshot pixel-perfect consistency with Linux CI environment
+- **Page Object Model** — all UI interactions encapsulated in page classes extending `BasePage`. Internal locators are `private`; only assertion and action methods are public.
+- **Zod schema validation** — every API response is validated against a typed schema at the point of the request. Separate schemas for POST (includes `createdAt`) and GET responses where shapes differ.
+- **Dual authentication** — UI session via `storageState`, API Bearer token via file. Both generated once in setup and reused across all tests.
+- **Factory + Builder pattern** — `CheckoutFactory` and `buildUser()` generate randomized test data. Builder methods allow targeted overrides without positional argument confusion.
+- **Generic ScenarioContext** — typed key-value store (`Map<string, unknown>`) for sharing data across Allure steps without global variables or rigid per-field typed contexts.
+- **Endpoint constants** — all API paths centralized in `endpoints.ts`. A single place to update when the API changes.
+- **Docker-first local execution** — guarantees visual snapshot pixel-parity with Linux CI. Local OS differences are eliminated entirely.
+- **Reusable CI workflow** — `run-tests.yml` eliminates job duplication. Adding a new test suite requires only a new job entry in `tests.yml`.
