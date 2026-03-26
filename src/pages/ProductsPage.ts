@@ -67,4 +67,14 @@ export class ProductsPage extends BasePage {
   async expectCartCount(count: number): Promise<void> {
     await this.header.expectCartCount(count);
   }
+
+  async expectProductButtonState(name: string, buttonType: 'add' | 'remove'): Promise<void> {
+    if (buttonType === 'add') {
+      await expect(this.addItemToCartButton(name)).toBeVisible();
+      await expect(this.removeItemFromCartButton(name)).not.toBeVisible();
+    } else {
+      await expect(this.removeItemFromCartButton(name)).toBeVisible();
+      await expect(this.addItemToCartButton(name)).not.toBeVisible();
+    }
+  }
 }

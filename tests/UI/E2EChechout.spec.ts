@@ -1,5 +1,6 @@
 import { test, expect } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
+import { calculateExpectedTotals } from '../../src/utils/priceCalculation';
 import { PRODUCTS } from '../../src/test-data/product';
 import { ProductsPage } from '../../src/pages/ProductsPage';
 import { CartPage } from '../../src/pages/CartPage';
@@ -47,11 +48,15 @@ test.describe('E2E User purchases a product', () => {
         });
         await productsPage.addProductToCartByName(p.name);
         await productsPage.expectCartCount(1);
+        await productsPage.expectProductButtonState(p.name, 'remove');
       });
 
-      await allure.step('Verify cart contents', async () => {
+      await allure.step('Navigate to shopping cart', async () => {
         await cartPage.open();
         await cartPage.assertOnCartPage();
+      });
+
+      await allure.step('Verify product in cart', async () => {
         await cartPage.expectNumberOfCartItems(1);
         await cartPage.expectCartItemVisible(p.name, {
           price: p.price,
@@ -82,9 +87,12 @@ test.describe('E2E User purchases a product', () => {
           description: p.description,
           quantity: '1',
         });
-        await checkoutStepTwoPage.expectItemTotal(p.price);
-        await checkoutStepTwoPage.expectTaxTotal(p.tax);
-        await checkoutStepTwoPage.expectTotal(p.total);
+
+        // Verify price calculation using utility
+        const totals = calculateExpectedTotals([p]);
+        await checkoutStepTwoPage.expectItemTotal(totals.subtotal);
+        await checkoutStepTwoPage.expectTaxTotal(totals.tax);
+        await checkoutStepTwoPage.expectTotal(totals.total);
       });
 
       await allure.step('Finish purchase', async () => {
