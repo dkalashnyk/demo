@@ -276,6 +276,8 @@ test.describe('Orders API', () => {
 
 ## UI Test Development
 
+Use Playwright MCP to run tests in a browser
+
 ### Step 1: Create Page Class (if new page)
 
 **File**: `src/pages/[PageName]Page.ts`

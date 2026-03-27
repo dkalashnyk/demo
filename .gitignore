@@ -1,6 +1,7 @@
 # Playwright
 node_modules/
 /playwright/.cache/
+.playwright-mcp/
 
 # Env files
 /config/.env.*
@@ -13,3 +14,7 @@ node_modules/
 
 # Auth
 /playwright/.auth/
+
+# Claude code
+.claude/
+CLAUDE.md
