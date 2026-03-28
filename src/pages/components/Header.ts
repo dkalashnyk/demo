@@ -6,13 +6,17 @@ export class Header {
   private readonly title: Locator;
   private readonly menuButton: Locator;
   private readonly resetAppStateButton: Locator;
+  private readonly closeMenuButton: Locator;
+  private readonly logoutLink: Locator;
 
   constructor(private readonly page: Page) {
     this.cartLink = this.page.getByTestId('shopping-cart-link');
     this.cartBadge = this.page.getByTestId('shopping-cart-badge');
     this.title = this.page.getByTestId('title');
-    this.menuButton = this.page.locator('[class*="bm-burger"]').first();
-    this.resetAppStateButton = this.page.getByText('Reset App State');
+    this.menuButton = this.page.getByRole('button', { name: 'Open Menu' });
+    this.resetAppStateButton = this.page.getByRole('link', { name: 'Reset App State' });
+    this.closeMenuButton = this.page.getByRole('button', { name: 'Close Menu' });
+    this.logoutLink = this.page.getByTestId('logout-sidebar-link');
   }
 
   async expectTitle(title: string): Promise<void> {
@@ -34,5 +38,15 @@ export class Header {
   async resetAppState(): Promise<void> {
     await this.menuButton.click();
     await this.resetAppStateButton.click();
+  }
+
+  async closeMenu(): Promise<void> {
+    await this.closeMenuButton.click();
+    await expect(this.resetAppStateButton).not.toBeVisible();
+  }
+
+  async logout(): Promise<void> {
+    await this.menuButton.click();
+    await this.logoutLink.click();
   }
 }

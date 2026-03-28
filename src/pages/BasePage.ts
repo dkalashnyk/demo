@@ -15,4 +15,14 @@ export abstract class BasePage {
   async expectUrlContains(part: string): Promise<void> {
     await expect(this.page).toHaveURL(new RegExp(part));
   }
+
+  protected async dismissAdOverlay(): Promise<void> {
+    await this.page.evaluate(() => {
+      document
+        .querySelectorAll(
+          'ins.adsbygoogle, .google-auto-placed, iframe[id^="ad"], iframe[id^="google"], [id^="google_ads"], [class*="ad-overlay"]',
+        )
+        .forEach((el) => el.remove());
+    });
+  }
 }

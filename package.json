@@ -19,6 +19,9 @@
     "test:prod:ui": "npm run test:prod -- --project ui",
     "test:prod:update-snapshots": "npm run test:prod -- --project visual --update-snapshots",
     "test:prod:visual": "npm run test:prod -- --project visual",
+    "test:qa:api:local": "cross-env TEST_ENV=qa WORKERS=4 npx playwright test --project=api",
+    "test:qa:ui:headed": "cross-env TEST_ENV=qa WORKERS=1 npx playwright test --project=setup --project=ui --headed",
+    "test:prod:ui:headed": "cross-env TEST_ENV=prod WORKERS=1 npx playwright test --project=setup --project=ui --headed",
     "test:ci:api": "playwright test --project=api",
     "test:ci:ui": "playwright test --project=setup --project=ui",
     "test:ci:visual": "playwright test --project=setup --project=visual",
@@ -30,8 +33,7 @@
     "report:allure:generate": "npm run report:allure:seed-history && docker run --rm -v \"%cd%:/work\" frankescobar/allure-docker-service allure generate /work/allure-results -o /work/allure-report --clean && npm run report:allure:trim-history",
     "report:allure:open": "docker run --rm -p 4040:4040 -v \"%cd%:/work\" frankescobar/allure-docker-service allure open /work/allure-report -h 0.0.0.0 -p 4040",
     "format": "prettier --write .",
-    "lint": "eslint . --ext .ts",
-    "prepare": "husky"
+    "lint": "eslint . --ext .ts"
   },
   "lint-staged": {
     "**/*.ts": [
@@ -48,16 +50,20 @@
     "@faker-js/faker": "^10.2.0",
     "@playwright/test": "^1.58.2",
     "@types/node": "^24.10.1",
+    "@types/pdf-parse": "^1.1.5",
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "@typescript-eslint/parser": "^8.53.1",
     "allure-commandline": "^2.36.0",
     "allure-playwright": "^3.4.5",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.3.1",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-playwright": "^2.10.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
+    "pdf-parse": "^1.1.1",
     "prettier": "^3.8.1",
     "typescript-eslint": "^8.53.1"
   },

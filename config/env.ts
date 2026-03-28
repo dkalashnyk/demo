@@ -1,3 +1,12 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load the env file for the current TEST_ENV when running outside Docker.
+// In Docker, variables are injected via --env-file so this is a no-op
+// (dotenv never overwrites variables that are already set).
+const testEnv = process.env.TEST_ENV ?? 'qa';
+dotenv.config({ path: path.resolve(__dirname, `.env.${testEnv}`) });
+
 export type EnvironmentName = 'qa' | 'prod';
 
 type EnvConfig = {
@@ -8,6 +17,8 @@ type EnvConfig = {
   apiLogin: string;
   apiPassword: string;
   apiKey: string;
+  practiceUploadUrl: string;
+  practiceDownloadUrl: string;
 };
 
 const configs: Record<EnvironmentName, EnvConfig> = {
@@ -19,6 +30,8 @@ const configs: Record<EnvironmentName, EnvConfig> = {
     apiLogin: process.env.API_LOGIN ?? '',
     apiPassword: process.env.API_PASSWORD ?? '',
     apiKey: process.env.API_KEY ?? '',
+    practiceUploadUrl: 'https://practice.expandtesting.com/upload',
+    practiceDownloadUrl: 'https://practice.expandtesting.com/download',
   },
   prod: {
     baseUrl: process.env.BASE_URL ?? '',
@@ -28,6 +41,8 @@ const configs: Record<EnvironmentName, EnvConfig> = {
     apiLogin: process.env.API_LOGIN ?? '',
     apiPassword: process.env.API_PASSWORD ?? '',
     apiKey: process.env.API_KEY ?? '',
+    practiceUploadUrl: 'https://practice.expandtesting.com/upload',
+    practiceDownloadUrl: 'https://practice.expandtesting.com/download',
   },
 };
 

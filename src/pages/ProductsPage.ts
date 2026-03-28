@@ -64,6 +64,10 @@ export class ProductsPage extends BasePage {
     await expect(this.productImage(name)).toHaveAttribute('alt', expected.img);
   }
 
+  async clickProductByName(name: string): Promise<void> {
+    await this.productItem(name).getByTestId('inventory-item-name').click();
+  }
+
   async expectCartCount(count: number): Promise<void> {
     await this.header.expectCartCount(count);
   }

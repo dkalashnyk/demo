@@ -26,6 +26,8 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 
 ```
 ├── .github/
+│   ├── instructions
+│   ├── prompts
 │   └── workflows/
 │       ├── tests.yml               # Main CI orchestrator (lint → api → ui → visual)
 │       └── run-tests.yml           # Reusable workflow for all test jobs
@@ -38,51 +40,24 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 ├── scripts/
 │   └── allure-history.mjs          # Allure history seed/trim scripts
 ├── src/
-│   ├── api/
-│   │   ├── endpoints.ts            # Centralized API endpoint constants
-│   │   ├── items.api.ts            # Items API methods + Zod schemas
-│   │   └── users.api.ts            # Users API methods + Zod schemas
+│   ├── api/                        # Centralized API endpoint constants and API methods and schemas
 │   ├── fixtures/
 │   │   ├── test.ts                 # Extended Playwright fixtures (page + api + ctx)
 │   │   ├── api.fixtures.ts         # API-only fixtures with Allure integration
 │   │   ├── allure-api.client.ts    # Allure-wrapped API request context
 │   │   └── createApiContext.ts     # Shared API context factory (x-api-key + Bearer)
-│   ├── mappers/
-│   │   └── user.mapper.ts          # Maps API response types to UI form data types
-│   ├── pages/
-│   │   ├── BasePage.ts             # Abstract base: assertVisual(), expectUrlContains()
-│   │   ├── LoginPage.ts
-│   │   ├── ProductsPage.ts
-│   │   ├── CartPage.ts
-│   │   ├── CheckoutStepOnePage.ts
-│   │   ├── CheckoutStepTwoPage.ts
-│   │   ├── CheckoutSummaryPage.ts
-│   │   └── components/
-│   │       ├── Header.ts           # Cart icon, title, cart badge
-│   │       └── CartTable.ts        # Cart item assertions
+│   ├── pages/                      # Pages folder
+│   │   └── components/             # Components folder
 │   ├── test-context/
 │   │   └── scenarioContext.ts      # Generic typed key-value store for cross-step data
-│   ├── test-data/
-│   │   ├── checkoutFactory.ts      # CheckoutFormData interface + factory + builder
-│   │   └── product.ts              # Typed static product test data (ProductData)
+│   ├── test-data/                  # Factories and contants folder
 │   └── utils/
-│       └── allure.ts               # Allure step/epic/feature/story helpers
 ├── tests/
 │   ├── Auth/
 │   │   └── auth.setup.ts           # UI storageState + API Bearer token setup
 │   ├── API/
-│   │   ├── item/
-│   │   │   ├── createItem.spec.ts
-│   │   │   ├── deleteItem.spec.ts
-│   │   │   └── getItem.spec.ts
-│   │   └── user/
-│   │       ├── createUser.spec.ts
-│   │       └── getUser.spec.ts
 │   ├── UI/
-│   │   ├── checkout.spec.ts        # UI checkout flow (no API dependency)
-│   │   ├── E2ECheckout.spec.ts     # E2E checkout with API user create/delete
 │   │   └── Visual/
-│   │       └── checkout.visual.spec.ts
 │   └── __snapshots__/              # Visual baselines — committed to repo
 ├── .gitignore
 ├── .prettierrc
