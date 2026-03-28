@@ -24,6 +24,10 @@ on:
         required: false
       QA_UI_PASSWORD:
         required: false
+      QA_PRACTICE_DOWNLOAD_URL:
+        required: false
+      QA_PRACTICE_UPLOAD_URL:
+        required: false
 
 jobs:
   test:
@@ -56,6 +60,8 @@ jobs:
           API_PASSWORD: ${{ secrets.QA_API_PASSWORD }}
           UI_USER: ${{ secrets.QA_UI_USER }}
           UI_PASSWORD: ${{ secrets.QA_UI_PASSWORD }}
+          PRACTICE_DOWNLOAD_URL: ${{ secrets.QA_PRACTICE_DOWNLOAD_URL }}
+          PRACTICE_UPLOAD_URL: ${{ secrets.QA_PRACTICE_UPLOAD_URL }}
 
       - name: Upload test results
         if: always()
