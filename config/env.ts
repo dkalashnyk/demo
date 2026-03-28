@@ -5,7 +5,14 @@ import * as path from 'path';
 // In Docker, variables are injected via --env-file so this is a no-op
 // (dotenv never overwrites variables that are already set).
 const testEnv = process.env.TEST_ENV ?? 'qa';
-dotenv.config({ path: path.resolve(__dirname, `.env.${testEnv}`) });
+const envPath = path.resolve(__dirname, `.env.${testEnv}`);
+const result = dotenv.config({ path: envPath, quiet: true, override: false });
+
+if (result.error || !result.parsed || Object.keys(result.parsed).length === 0) {
+  console.warn(
+    `[env] Warning: no variables loaded from ${envPath}. Check the file exists and is not empty.`,
+  );
+}
 
 export type EnvironmentName = 'qa' | 'prod';
 
@@ -17,8 +24,6 @@ type EnvConfig = {
   apiLogin: string;
   apiPassword: string;
   apiKey: string;
-  practiceUploadUrl: string;
-  practiceDownloadUrl: string;
 };
 
 const configs: Record<EnvironmentName, EnvConfig> = {
@@ -30,8 +35,6 @@ const configs: Record<EnvironmentName, EnvConfig> = {
     apiLogin: process.env.API_LOGIN ?? '',
     apiPassword: process.env.API_PASSWORD ?? '',
     apiKey: process.env.API_KEY ?? '',
-    practiceUploadUrl: 'https://practice.expandtesting.com/upload',
-    practiceDownloadUrl: 'https://practice.expandtesting.com/download',
   },
   prod: {
     baseUrl: process.env.BASE_URL ?? '',
@@ -41,8 +44,6 @@ const configs: Record<EnvironmentName, EnvConfig> = {
     apiLogin: process.env.API_LOGIN ?? '',
     apiPassword: process.env.API_PASSWORD ?? '',
     apiKey: process.env.API_KEY ?? '',
-    practiceUploadUrl: 'https://practice.expandtesting.com/upload',
-    practiceDownloadUrl: 'https://practice.expandtesting.com/download',
   },
 };
 
