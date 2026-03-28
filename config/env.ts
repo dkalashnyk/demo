@@ -24,6 +24,8 @@ type EnvConfig = {
   apiLogin: string;
   apiPassword: string;
   apiKey: string;
+  practiceDownloadUrl: string;
+  practiceUploadUrl: string;
 };
 
 const configs: Record<EnvironmentName, EnvConfig> = {
@@ -35,6 +37,8 @@ const configs: Record<EnvironmentName, EnvConfig> = {
     apiLogin: process.env.API_LOGIN ?? '',
     apiPassword: process.env.API_PASSWORD ?? '',
     apiKey: process.env.API_KEY ?? '',
+    practiceDownloadUrl: process.env.PRACTICE_DOWNLOAD_URL ?? '',
+    practiceUploadUrl: process.env.PRACTICE_UPLOAD_URL ?? '',
   },
   prod: {
     baseUrl: process.env.BASE_URL ?? '',
@@ -44,6 +48,8 @@ const configs: Record<EnvironmentName, EnvConfig> = {
     apiLogin: process.env.API_LOGIN ?? '',
     apiPassword: process.env.API_PASSWORD ?? '',
     apiKey: process.env.API_KEY ?? '',
+    practiceDownloadUrl: process.env.PRACTICE_DOWNLOAD_URL ?? '',
+    practiceUploadUrl: process.env.PRACTICE_UPLOAD_URL ?? '',
   },
 };
 
