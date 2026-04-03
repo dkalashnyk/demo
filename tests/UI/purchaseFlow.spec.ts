@@ -3,33 +3,26 @@ import allure from '../../src/utils/allure';
 import { calculateExpectedTotals } from '../../src/utils/priceCalculation';
 import { PRODUCTS } from '../../src/test-data/product';
 import { CheckoutFactory, CheckoutFormData } from '../../src/test-data/checkoutFactory';
-import { ProductsPage } from '../../src/pages/ProductsPage';
-import { CartPage } from '../../src/pages/CartPage';
-import { CheckoutStepOnePage } from '../../src/pages/CheckoutStepOnePage';
-import { CheckoutStepTwoPage } from '../../src/pages/CheckoutStepTwoPage';
-import { CheckoutSummaryPage } from '../../src/pages/CheckoutSummaryPage';
 
 const product1 = PRODUCTS.TC02;
 const product2 = PRODUCTS.TC03;
 
 test.describe('Purchase Flow', () => {
-  test('@ui TC02 User purchases one product', async ({ page, ctx }) => {
-    // ===== METADATA =====
+  test('@ui TC02 User purchases one product', async ({
+    productsPage,
+    cartPage,
+    checkoutStepOnePage,
+    checkoutStepTwoPage,
+    checkoutSummaryPage,
+    ctx,
+  }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Checkout');
     await allure.story('Purchase product');
 
-    // ===== SETUP =====
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    const checkoutStepOnePage = new CheckoutStepOnePage(page);
-    const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
-    const checkoutSummaryPage = new CheckoutSummaryPage(page);
-
     const checkoutData = CheckoutFactory.create();
     ctx.set<CheckoutFormData>('checkout', checkoutData);
 
-    // ===== ACT & VERIFY =====
     await allure.step('Open Products page', async () => {
       await productsPage.open();
       await productsPage.assertOnProductsPage();
@@ -96,24 +89,21 @@ test.describe('Purchase Flow', () => {
     });
   });
 
-  test('@ui TC04 User adds 2 products to cart and completes purchase', async ({ page, ctx }) => {
-    // ===== METADATA =====
+  test('@ui TC04 User adds 2 products to cart and completes purchase', async ({
+    productsPage,
+    cartPage,
+    checkoutStepOnePage,
+    checkoutStepTwoPage,
+    checkoutSummaryPage,
+    ctx,
+  }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Checkout');
     await allure.story('User shops and completes purchase with multiple products');
 
-    // ===== SETUP =====
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    const checkoutStepOnePage = new CheckoutStepOnePage(page);
-    const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
-    const checkoutSummaryPage = new CheckoutSummaryPage(page);
-
-    // Create test data for checkout
     const checkoutData = CheckoutFactory.create();
     ctx.set<CheckoutFormData>('checkout', checkoutData);
 
-    // ===== ACT & VERIFY =====
     await allure.step('Open Products page', async () => {
       await productsPage.open();
       await productsPage.assertOnProductsPage();
@@ -204,20 +194,18 @@ test.describe('Purchase Flow', () => {
     });
   });
 
-  test('@ui TC05 User can proceed with different checkout details', async ({ page, ctx }) => {
-    // ===== METADATA =====
+  test('@ui TC05 User can proceed with different checkout details', async ({
+    productsPage,
+    cartPage,
+    checkoutStepOnePage,
+    checkoutStepTwoPage,
+    checkoutSummaryPage,
+    ctx,
+  }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Checkout');
     await allure.story('User completes purchase with custom checkout data');
 
-    // ===== SETUP =====
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    const checkoutStepOnePage = new CheckoutStepOnePage(page);
-    const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
-    const checkoutSummaryPage = new CheckoutSummaryPage(page);
-
-    // Create custom checkout data
     const customCheckoutData = CheckoutFactory.create({
       firstName: 'John',
       lastName: 'Smith',
@@ -225,7 +213,6 @@ test.describe('Purchase Flow', () => {
     });
     ctx.set<CheckoutFormData>('checkout', customCheckoutData);
 
-    // ===== ACT & VERIFY =====
     await allure.step('Navigate to Products page', async () => {
       await productsPage.open();
       await productsPage.assertOnProductsPage();

@@ -4,23 +4,22 @@ import fs from 'fs';
 
 import { test, expect } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
-import { DownloadPage } from '../../src/pages/DownloadPage';
-import { UploadPage } from '../../src/pages/UploadPage';
 import { INVOICE_PDF } from '../../src/test-data/pdfExpectedData';
 import { extractPdfData } from '../../src/utils/pdfParser';
 import { env } from '../../config/env';
 
 test.describe('PDF File Download and Content Verification', () => {
-  test('@ui @smoke P-2 User downloads PDF and verifies content', async ({ page }) => {
+  test('@ui @smoke P-2 User downloads PDF and verifies content', async ({
+    downloadPage,
+    uploadPage,
+  }) => {
     await allure.epic('File Download');
     await allure.feature('PDF Verification');
     await allure.story('Upload, download and verify PDF content');
 
     test.setTimeout(60_000);
 
-    const uploadPage = new UploadPage(page);
-    const downloadPage = new DownloadPage(page);
-    const fixturePath = path.join(__dirname, '../fixtures', INVOICE_PDF.fixtureFilename);
+    const fixturePath = path.join(__dirname, '../../src/test-data', INVOICE_PDF.fixtureFilename);
     let savePath: string | undefined;
 
     try {

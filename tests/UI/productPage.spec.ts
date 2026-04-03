@@ -1,19 +1,14 @@
 import { test } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
 import { PRODUCTS } from '../../src/test-data/product';
-import { ProductsPage } from '../../src/pages/ProductsPage';
-import { ProductDetailPage } from '../../src/pages/ProductDetailPage';
 
 const product = PRODUCTS.TC02;
 
 test.describe('Product Detail Page', () => {
-  test('@ui @smoke P-1 User views product page', async ({ page }) => {
+  test('@ui @smoke P-1 User views product page', async ({ productsPage, productDetailPage }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Product Page');
     await allure.story('View product page');
-
-    const productsPage = new ProductsPage(page);
-    const productDetailPage = new ProductDetailPage(page);
 
     await allure.step('Open Products page', async () => {
       await productsPage.open();

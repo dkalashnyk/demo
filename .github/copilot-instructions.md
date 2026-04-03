@@ -24,12 +24,12 @@ demo/
 │   └── workflows/
 │       ├── tests.yml              # Main CI orchestrator (lint → api → ui → visual)
 │       └── run-tests.yml          # Reusable workflow template
+├── .husky/
+│   └── pre-commit                 # Runs lint-staged before every commit
 ├── config/
 │   ├── env.ts                     # Typed environment configuration
 │   ├── .env.qa                    # QA environment variables (gitignored)
 │   └── .env.prod                  # Production environment variables (gitignored)
-├── scripts/
-│   └── allure-history.mjs         # Allure history management
 ├── src/
 │   ├── api/                       # API endpoint constants and methods
 │   ├── pages/                     # UI Page Object Model classes folder
@@ -42,8 +42,7 @@ demo/
 │   ├── test-context/
 │   │   └── scenarioContext.ts     # Test execution context for data sharing
 │   ├── test-data/                 # Test data builders and constants
-│   └── utils/
-│       └── allure.ts              # Allure reporting utilities
+│   └── utils/                     # Utility functions (Allure, etc.)
 ├── tests/
 │   ├── API/
 │   ├── Auth/

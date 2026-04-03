@@ -1,19 +1,21 @@
 import { test, expect } from '../../../src/fixtures/test';
 import allure from '../../../src/utils/allure';
 import { PRODUCTS } from '../../../src/test-data/product';
-import { ProductsPage } from '../../../src/pages/ProductsPage';
-import { ProductDetailPage } from '../../../src/pages/ProductDetailPage';
-import { CartPage } from '../../../src/pages/CartPage';
-import { CheckoutStepOnePage } from '../../../src/pages/CheckoutStepOnePage';
-import { CheckoutStepTwoPage } from '../../../src/pages/CheckoutStepTwoPage';
-import { CheckoutSummaryPage } from '../../../src/pages/CheckoutSummaryPage';
 import usersApi, { buildUser } from '../../../src/api/users.api';
 import { CheckoutFactory, CheckoutFormData } from '../../../src/test-data/checkoutFactory';
 
 const p = PRODUCTS.TC03;
 
 test.describe('Visual checkout', () => {
-  test('@visual Visual test for purchasing a product', async ({ page, api, ctx }) => {
+  test('@visual Visual test for purchasing a product', async ({
+    productsPage,
+    cartPage,
+    checkoutStepOnePage,
+    checkoutStepTwoPage,
+    checkoutSummaryPage,
+    api,
+    ctx,
+  }) => {
     await allure.epic('Web App');
     await allure.feature('Visual Testing');
     await allure.story('Purchase product');
@@ -21,12 +23,6 @@ test.describe('Visual checkout', () => {
     const payload = buildUser();
     const { res: createRes, json: createdUser } = await usersApi.createUser(api, payload);
     expect(createRes.status()).toBe(200);
-
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    const checkoutStepOnePage = new CheckoutStepOnePage(page);
-    const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
-    const checkoutSummaryPage = new CheckoutSummaryPage(page);
 
     const checkoutData = CheckoutFactory.create();
     ctx.set<CheckoutFormData>('checkout', checkoutData);
@@ -79,13 +75,13 @@ test.describe('Visual checkout', () => {
     }
   });
 
-  test('@visual V-1 Product detail page visual regression', async ({ page }) => {
+  test('@visual V-1 Product detail page visual regression', async ({
+    productsPage,
+    productDetailPage,
+  }) => {
     await allure.epic('Web App');
     await allure.feature('Visual Testing');
     await allure.story('Product detail page');
-
-    const productsPage = new ProductsPage(page);
-    const productDetailPage = new ProductDetailPage(page);
 
     await allure.step('Navigate to product detail page', async () => {
       await productsPage.open();

@@ -2,27 +2,24 @@ import { test, expect } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
 import { calculateExpectedTotals } from '../../src/utils/priceCalculation';
 import { PRODUCTS } from '../../src/test-data/product';
-import { ProductsPage } from '../../src/pages/ProductsPage';
-import { CartPage } from '../../src/pages/CartPage';
-import { CheckoutStepOnePage } from '../../src/pages/CheckoutStepOnePage';
-import { CheckoutStepTwoPage } from '../../src/pages/CheckoutStepTwoPage';
-import { CheckoutSummaryPage } from '../../src/pages/CheckoutSummaryPage';
 import usersApi, { buildUser } from '../../src/api/users.api';
 import { CheckoutFormData } from '../../src/test-data/checkoutFactory';
 
 const p = PRODUCTS.TC03;
 
 test.describe('E2E User purchases a product', () => {
-  test('@ui @smoke TC03 New user purchases one product', async ({ page, api, ctx }) => {
+  test('@ui @smoke TC03 New user purchases one product', async ({
+    api,
+    ctx,
+    productsPage,
+    cartPage,
+    checkoutStepOnePage,
+    checkoutStepTwoPage,
+    checkoutSummaryPage,
+  }) => {
     await allure.epic('Web App');
     await allure.feature('Checkout');
     await allure.story('Purchase product');
-
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    const checkoutStepOnePage = new CheckoutStepOnePage(page);
-    const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
-    const checkoutSummaryPage = new CheckoutSummaryPage(page);
 
     const payload = buildUser();
     const { res: createRes, json: createdUser } = await usersApi.createUser(api, payload);

@@ -1,22 +1,18 @@
 import { test } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
 import { PRODUCTS } from '../../src/test-data/product';
-import { ProductsPage } from '../../src/pages/ProductsPage';
-import { CartPage } from '../../src/pages/CartPage';
-import { CheckoutStepOnePage } from '../../src/pages/CheckoutStepOnePage';
 
 const product = PRODUCTS.TC02;
 
 test.describe('Reset App State', () => {
   test('@ui @smoke P-1 Reset clears cart, hides badge after reload, and preserves login session', async ({
     page,
+    productsPage,
+    cartPage,
   }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Reset App State');
     await allure.story('Reset clears cart and preserves session');
-
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
 
     await allure.step('Open Products page and add product to cart', async () => {
       await productsPage.open();
@@ -46,12 +42,10 @@ test.describe('Reset App State', () => {
     });
   });
 
-  test('@ui N-1 Reset then re-add items to cart', async ({ page }) => {
+  test('@ui N-1 Reset then re-add items to cart', async ({ page, productsPage }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Reset App State');
     await allure.story('Cart functions normally after reset');
-
-    const productsPage = new ProductsPage(page);
 
     await allure.step('Open Products page and add product to cart', async () => {
       await productsPage.open();
@@ -80,12 +74,10 @@ test.describe('Reset App State', () => {
     });
   });
 
-  test('@ui P-2 Reset on empty cart is a no-op', async ({ page }) => {
+  test('@ui P-2 Reset on empty cart is a no-op', async ({ page, productsPage }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Reset App State');
     await allure.story('Reset on empty cart');
-
-    const productsPage = new ProductsPage(page);
 
     await allure.step('Open Products page with empty cart', async () => {
       await productsPage.open();
@@ -104,13 +96,14 @@ test.describe('Reset App State', () => {
     });
   });
 
-  test('@ui P-3 Reset triggered from the Cart page clears cart', async ({ page }) => {
+  test('@ui P-3 Reset triggered from the Cart page clears cart', async ({
+    page,
+    productsPage,
+    cartPage,
+  }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Reset App State');
     await allure.story('Reset from Cart page');
-
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
 
     await allure.step('Open Products page and add product to cart', async () => {
       await productsPage.open();
@@ -136,12 +129,10 @@ test.describe('Reset App State', () => {
     });
   });
 
-  test('@ui N-2 Multiple consecutive resets', async ({ page }) => {
+  test('@ui N-2 Multiple consecutive resets', async ({ page, productsPage }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Reset App State');
     await allure.story('Multiple consecutive resets');
-
-    const productsPage = new ProductsPage(page);
 
     await allure.step('Open Products page and add product to cart', async () => {
       await productsPage.open();
@@ -166,14 +157,14 @@ test.describe('Reset App State', () => {
     });
   });
 
-  test('@ui N-3 Reset during checkout flow returns to clean state', async ({ page }) => {
+  test('@ui N-3 Reset during checkout flow returns to clean state', async ({
+    productsPage,
+    cartPage,
+    checkoutStepOnePage,
+  }) => {
     await allure.epic('E-Commerce');
     await allure.feature('Reset App State');
     await allure.story('Reset during checkout');
-
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    const checkoutStepOnePage = new CheckoutStepOnePage(page);
 
     await allure.step('Add product and proceed to checkout', async () => {
       await productsPage.open();

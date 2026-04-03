@@ -26,8 +26,6 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 
 ```
 ├── .github/
-│   ├── instructions
-│   ├── prompts
 │   └── workflows/
 │       ├── tests.yml               # Main CI orchestrator (lint → api → ui → visual)
 │       └── run-tests.yml           # Reusable workflow for all test jobs
@@ -37,8 +35,6 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 │   ├── env.ts                      # Typed environment config (qa/prod)
 │   ├── .env.qa                     # Local QA environment variables (gitignored)
 │   └── .env.prod                   # Local prod environment variables (gitignored)
-├── scripts/
-│   └── allure-history.mjs          # Allure history seed/trim scripts
 ├── src/
 │   ├── api/                        # Centralized API endpoint constants and API methods and schemas
 │   ├── fixtures/
@@ -51,7 +47,7 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 │   ├── test-context/
 │   │   └── scenarioContext.ts      # Generic typed key-value store for cross-step data
 │   ├── test-data/                  # Factories and contants folder
-│   └── utils/
+│   └── utils/                      # Utility functions (Allure, etc.)
 ├── tests/
 │   ├── Auth/
 │   │   └── auth.setup.ts           # UI storageState + API Bearer token setup
@@ -109,6 +105,8 @@ UI_PASSWORD=your_ui_password
 API_LOGIN=your_api_login
 API_PASSWORD=your_api_password
 API_KEY=your_api_key
+PRACTICE_DOWNLOAD_URL=https://practice.expandtesting.com/download
+PRACTICE_UPLOAD_URL=https://practice.expandtesting.com/upload
 ```
 
 **4. Build the Docker image:**
