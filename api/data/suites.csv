@@ -1,8 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","387","@api @negative DELETE /objects/:id - returns 404 for a non-existent item","api","2026-04-03","passed","2026-04-03","","API/item/deleteItem.spec.ts","",""
-"","611","@api @smoke Create a user","api","2026-04-03","passed","2026-04-03","","API/user/createUser.spec.ts","",""
-"","370","@api @negative GET /objects/:id - returns 404 for a non-existent item","api","2026-04-03","passed","2026-04-03","","API/item/getItem.spec.ts","",""
-"","939","@api @smoke Delete an item","api","2026-04-03","passed","2026-04-03","","API/item/deleteItem.spec.ts","",""
-"","1019","@api Get an item","api","2026-04-03","passed","2026-04-03","","API/item/getItem.spec.ts","",""
-"","284","@api @smoke env - API base URL is defined and reachable","api","2026-04-03","passed","2026-04-03","","API/root/root.spec.ts","",""
-"","1090","@api @smoke Create an item","api","2026-04-03","passed","2026-04-03","","API/item/createItem.spec.ts","",""
