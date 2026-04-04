@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import { ENDPOINTS } from '../../src/api/endpoints';
 import { test as setup, expect } from '../../src/fixtures/test';
-import allure from '../../src/utils/allure';
+import annotations from '../../src/utils/annotations';
 import { createApiContext } from '../../src/fixtures/createApiContext';
 import { LoginPage } from '../../src/pages/LoginPage';
 import { ProductsPage } from '../../src/pages/ProductsPage';
@@ -15,11 +15,11 @@ setup('Auth UI', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const productsPage = new ProductsPage(page);
 
-  await allure.step('User opens login page', async () => {
+  await annotations.step('User opens login page', async () => {
     await loginPage.open();
   });
 
-  await allure.step('User signs in', async () => {
+  await annotations.step('User signs in', async () => {
     await loginPage.login(env.user, env.password);
     await productsPage.assertOnProductsPage();
   });
@@ -30,12 +30,12 @@ setup('Auth UI', async ({ page }) => {
 setup.describe.configure({ retries: 2 });
 
 setup('Auth API', async () => {
-  await allure.epic('Auth');
-  await allure.feature('API Authentication');
+  await annotations.epic('Auth');
+  await annotations.feature('API Authentication');
 
   const apiContext = await createApiContext();
 
-  await allure.step('POST /auth/login', async () => {
+  await annotations.step('POST /auth/login', async () => {
     const res = await apiContext.post(ENDPOINTS.auth, {
       data: { login: env.apiLogin, password: env.apiPassword },
     });
@@ -43,7 +43,7 @@ setup('Auth API', async () => {
 
     const { token } = await res.json(); // { name, login, token }
 
-    await allure.step('Save token to file', async () => {
+    await annotations.step('Save token to file', async () => {
       fs.mkdirSync('playwright/.auth', { recursive: true });
       fs.writeFileSync(API_AUTH_FILE, JSON.stringify({ token }));
     });

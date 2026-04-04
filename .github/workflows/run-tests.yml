@@ -40,12 +40,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
       - name: Install dependencies
         run: npm ci
 
@@ -63,21 +57,19 @@ jobs:
           PRACTICE_DOWNLOAD_URL: ${{ secrets.QA_PRACTICE_DOWNLOAD_URL }}
           PRACTICE_UPLOAD_URL: ${{ secrets.QA_PRACTICE_UPLOAD_URL }}
 
-      - name: Upload test results
+      - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: ${{ inputs.project }}-allure-results
-          path: allure-results/
+          name: ${{ inputs.project }}-playwright-report
+          path: playwright-report/
+          retention-days: 30
 
-      - name: Generate Allure report
-        if: always()
-        run: npx allure generate allure-results -o allure-report --clean
-
-      - name: Deploy Allure report to GitHub Pages
+      - name: Deploy Playwright report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report/
-          destination_dir: ${{ inputs.report_dir }}
+          publish_dir: playwright-report/
+          destination_dir: ${{ inputs.report_dir }}/${{ github.run_number }}
+          keep_files: true

@@ -8,8 +8,6 @@ node_modules/
 
 # Reports
 /playwright-report/
-/allure-results/
-/allure-report/
 /test-results/
 
 # Auth
@@ -18,6 +16,6 @@ node_modules/
 # Agents
 .claude/
 CLAUDE.md
-.github/prompsts/
-.github/instructions/
+.github/prompts/*
+.github/instructions/*
 .github/copilot-instructions.md

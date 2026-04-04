@@ -1,5 +1,5 @@
 import { test, expect } from '../../src/fixtures/test';
-import allure from '../../src/utils/allure';
+import annotations from '../../src/utils/annotations';
 import { calculateExpectedTotals } from '../../src/utils/priceCalculation';
 import { PRODUCTS } from '../../src/test-data/product';
 import usersApi, { buildUser } from '../../src/api/users.api';
@@ -17,9 +17,9 @@ test.describe('E2E User purchases a product', () => {
     checkoutStepTwoPage,
     checkoutSummaryPage,
   }) => {
-    await allure.epic('Web App');
-    await allure.feature('Checkout');
-    await allure.story('Purchase product');
+    await annotations.epic('Web App');
+    await annotations.feature('Checkout');
+    await annotations.story('Purchase product');
 
     const payload = buildUser();
     const { res: createRes, json: createdUser } = await usersApi.createUser(api, payload);
@@ -32,12 +32,12 @@ test.describe('E2E User purchases a product', () => {
     });
 
     try {
-      await allure.step('Open Products page', async () => {
+      await annotations.step('Open Products page', async () => {
         await productsPage.open();
         await productsPage.assertOnProductsPage();
       });
 
-      await allure.step('Add product to cart', async () => {
+      await annotations.step('Add product to cart', async () => {
         await productsPage.expectProductVisible(p.name, {
           price: p.price,
           description: p.description,
@@ -48,12 +48,12 @@ test.describe('E2E User purchases a product', () => {
         await productsPage.expectProductButtonState(p.name, 'remove');
       });
 
-      await allure.step('Navigate to shopping cart', async () => {
+      await annotations.step('Navigate to shopping cart', async () => {
         await cartPage.open();
         await cartPage.assertOnCartPage();
       });
 
-      await allure.step('Verify product in cart', async () => {
+      await annotations.step('Verify product in cart', async () => {
         await cartPage.expectNumberOfCartItems(1);
         await cartPage.expectCartItemVisible(p.name, {
           price: p.price,
@@ -62,22 +62,22 @@ test.describe('E2E User purchases a product', () => {
         });
       });
 
-      await allure.step('Open Checkout page', async () => {
+      await annotations.step('Open Checkout page', async () => {
         await cartPage.proceedToCheckout();
         await checkoutStepOnePage.assertOnCheckoutPage();
       });
 
-      await allure.step('Fill in Checkout information', async () => {
+      await annotations.step('Fill in Checkout information', async () => {
         const { firstName, lastName, zip } = ctx.require<CheckoutFormData>('checkout');
         await checkoutStepOnePage.fillCheckoutInformation(firstName, lastName, zip);
       });
 
-      await allure.step('Open Checkout Step 2', async () => {
+      await annotations.step('Open Checkout Step 2', async () => {
         await checkoutStepOnePage.clickContinue();
         await checkoutStepTwoPage.assertOnCheckoutPage();
       });
 
-      await allure.step('Verify order details', async () => {
+      await annotations.step('Verify order details', async () => {
         await checkoutStepTwoPage.expectNumberOfCartItems(1);
         await checkoutStepTwoPage.expectItemInCart(p.name, {
           price: p.price,
@@ -92,7 +92,7 @@ test.describe('E2E User purchases a product', () => {
         await checkoutStepTwoPage.expectTotal(totals.total);
       });
 
-      await allure.step('Finish purchase', async () => {
+      await annotations.step('Finish purchase', async () => {
         await checkoutStepTwoPage.clickFinish();
         await checkoutSummaryPage.assertOnCheckoutPage();
         await checkoutSummaryPage.expectOrderCompleteMessage();

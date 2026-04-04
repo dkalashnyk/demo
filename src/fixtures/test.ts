@@ -1,7 +1,7 @@
 import type { APIRequestContext } from '@playwright/test';
 import { test as base, expect } from '@playwright/test';
 
-import { allureApi } from './allure-api.client';
+import { playwrightApi } from './api.client';
 import { createApiContext } from './createApiContext';
 import { ScenarioContext } from '../test-context/scenarioContext';
 import { CartPage } from '../pages/CartPage';
@@ -35,7 +35,7 @@ export const test = base.extend<Fixtures>({
 
   api: async ({ request: _request }, use) => {
     const rawContext = await createApiContext();
-    await use(allureApi(rawContext));
+    await use(playwrightApi(rawContext));
     await rawContext.dispose();
   },
 

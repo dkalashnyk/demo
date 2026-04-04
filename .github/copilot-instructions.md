@@ -443,13 +443,13 @@ export const env = {
 }
 ```
 
-4. **UI Tests** assume authentication is already done:
+4. **UI Tests** assume authentication is already done, and receive page objects via fixtures — never instantiate them with `new`:
 
 ```typescript
 // tests/UI/checkout.spec.ts
-test('@ui TC02 User completes purchase', async ({ page }) => {
+test('@ui TC02 User completes purchase', async ({ productsPage }) => {
   // User is already authenticated — no login needed
-  const productsPage = new ProductsPage(page);
+  // productsPage is injected by the fixture system, not created with `new`
   await productsPage.open();
   await productsPage.assertOnProductsPage();
   // Continue with test flow...
@@ -545,12 +545,9 @@ test('@ui Complete Purchase', async ({ page }) => {
 ```typescript
 // tests/UI/Visual/checkout.visual.spec.ts
 import { test } from '../../../src/fixtures/test';
-import { CheckoutSummaryPage } from '../../../src/pages/CheckoutSummaryPage';
 
-test('@visual Verify checkout complete page appearance', async ({ page }) => {
-  const checkoutSummaryPage = new CheckoutSummaryPage(page);
-
-  // Navigate to page
+test('@visual Verify checkout complete page appearance', async ({ checkoutSummaryPage }) => {
+  // Page objects are injected via fixtures — no `new` needed
   await checkoutSummaryPage.open();
 
   // Capture visual snapshot (animations disabled)
@@ -562,31 +559,31 @@ test('@visual Verify checkout complete page appearance', async ({ page }) => {
 
 ### Comprehensive UI Test Example
 
+Page objects are injected as fixtures — import `test` from `src/fixtures/test` and destructure the page objects you need directly from the fixture parameter. Never import page classes or call `new PageClass(page)` in test files.
+
 ```typescript
 // tests/UI/checkout.spec.ts
 import { test } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
 import { PRODUCTS } from '../../src/test-data/product';
 import { CheckoutFactory, CheckoutFormData } from '../../src/test-data/checkoutFactory';
-import { ProductsPage } from '../../src/pages/ProductsPage';
-import { CartPage } from '../../src/pages/CartPage';
-import { CheckoutStepOnePage } from '../../src/pages/CheckoutStepOnePage';
 
 const product = PRODUCTS.TC02;
 
 test.describe('User purchases a product', () => {
-  test('@ui TC02 User purchases one product with valid data', async ({ page, ctx }) => {
+  test('@ui TC02 User purchases one product with valid data', async ({
+    productsPage,
+    cartPage,
+    checkoutStepOnePage,
+    ctx,
+  }) => {
     // ===== METADATA =====
     await allure.epic('Web App');
     await allure.feature('Checkout');
     await allure.story('Purchase product');
 
     // ===== SETUP =====
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    const checkoutStepOnePage = new CheckoutStepOnePage(page);
-    const checkoutData = CheckoutFactory.create();
-    ctx.set<CheckoutFormData>('checkout', checkoutData);
+    ctx.set<CheckoutFormData>('checkout', CheckoutFactory.create());
 
     // ===== ACT & VERIFY with STEPS =====
     await allure.step('Open Products page', async () => {
@@ -742,12 +739,14 @@ When writing API tests:
 
 When writing UI tests:
 
-1. Use Page Object Model (extend `BasePage`)
-2. Keep locators **private** and methods **public**
-3. Use `allure.step()` to structure test flow
-4. Use context (`ctx`) for cross-step data sharing
-5. Call `assertOn[Page]()` to verify page load
-6. Tag with `@ui` and relevant markers (`@e2e`, `@smoke`)
+1. Destructure page objects from the fixture parameter — never call `new PageClass(page)` in a test
+2. Import `test` from `src/fixtures/test` — all page objects are pre-wired
+3. Keep locators **private** and methods **public** in page classes
+4. Use `allure.step()` to structure test flow
+5. Use context (`ctx`) for cross-step data sharing
+6. Call `assertOn[Page]()` to verify page load
+7. Tag with `@ui` and relevant markers (`@e2e`, `@smoke`)
+8. When a new page class is added to `src/pages/`, register it in `src/fixtures/test.ts`
 
 ### Page Class Writing
 

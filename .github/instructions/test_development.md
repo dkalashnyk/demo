@@ -40,10 +40,9 @@ Folder Structure:  tests/[Type]/[Resource]/[operation].spec.ts
 import { test, expect } from '../../../src/fixtures/api.fixtures';
 import itemsApi, { buildItem } from '../../../src/api/items.api';
 
-// For UI tests
+// For UI tests — page objects are injected as fixtures, no page class imports needed
 import { test } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
-import { ProductsPage } from '../../src/pages/ProductsPage';
 ```
 
 ---
@@ -367,23 +366,22 @@ export class OrderDetailsPage extends BasePage {
 
 **Pattern**: METADATA → SETUP → ACT & VERIFY with STEPS
 
+Page objects are injected as fixtures from `src/fixtures/test`. Do **not** import page classes or instantiate them with `new` in test files. When a new page class is added, register it in `src/fixtures/test.ts` first.
+
 ```typescript
 // tests/UI/orders/orderDetails.spec.ts
 import { test } from '../../src/fixtures/test';
 import allure from '../../src/utils/allure';
-import { OrderDetailsPage } from '../../src/pages/OrderDetailsPage';
-import { OrderListPage } from '../../src/pages/OrderListPage';
+
+// NOTE: orderListPage and orderDetailsPage would need to be registered in src/fixtures/test.ts
+// before they can be used here. This example shows the fixture-based pattern.
 
 test.describe('Order Details Page', () => {
-  test('@ui TC010 View order details and items', async ({ page }) => {
+  test('@ui TC010 View order details and items', async ({ page, orderListPage, orderDetailsPage }) => {
     // ===== METADATA =====
     await allure.epic('Orders');
     await allure.feature('Order Management');
     await allure.story('User views order details');
-
-    // ===== SETUP =====
-    const orderListPage = new OrderListPage(page);
-    const orderDetailsPage = new OrderDetailsPage(page);
 
     // ===== ACT & VERIFY =====
     await allure.step('Open Orders list page', async () => {
@@ -404,21 +402,15 @@ test.describe('Order Details Page', () => {
         price: '$99.99',
       });
     });
-
-    await allure.step('Take screenshot for visual regression', async () => {
-      await page.screenshot({ path: 'order-details.png' });
-    });
   });
 
-  test('@ui TC011 Cancel order from details page', async ({ page, ctx }) => {
+  test('@ui TC011 Cancel order from details page', async ({ page, orderDetailsPage, ctx }) => {
     // ===== METADATA =====
     await allure.epic('Orders');
     await allure.feature('Order Management');
     await allure.story('User cancels order');
     await allure.severity('normal');
 
-    // ===== SETUP =====
-    const orderDetailsPage = new OrderDetailsPage(page);
     const orderId = 'ORD-123456'; // From setup or context
 
     // ===== ACT & VERIFY =====
@@ -454,6 +446,8 @@ test.describe('Order Details Page', () => {
 - ✅ Create private helper locator methods
 - ✅ Expose high-level public methods
 - ✅ Use descriptive method names (action verbs: `open`, `click`, `expect`)
+- ✅ Register new page class in `src/fixtures/test.ts` (Fixtures type + `test.extend` block)
+- ✅ Destructure page objects from the fixture parameter — never use `new PageClass(page)` in tests
 - ✅ Tag with `@ui` and scenario type (`@e2e`, `@smoke`)
 - ✅ Use `allure.step()` to structure test flow
 - ✅ Use context for data sharing across steps
@@ -595,15 +589,13 @@ test('@api Delete resource', async ({ api }) => {
 
 ### Scenario 2: Complex UI Workflow with Data Sharing
 
-```typescript
-test('@ui @e2e Complete order checkout workflow', async ({ page, ctx }) => {
-  // ===== SETUP & DATA SHARING =====
-  const orderData = OrderFactory.create();
-  ctx.set('orderData', orderData);
+Page objects come from fixtures — destructure them from the test parameter:
 
-  const cartPage = new CartPage(page);
-  const checkoutPage = new CheckoutPage(page);
-  const confirmationPage = new ConfirmationPage(page);
+```typescript
+// cartPage, checkoutPage, confirmationPage must be registered in src/fixtures/test.ts first
+test('@ui @e2e Complete order checkout workflow', async ({ cartPage, checkoutPage, confirmationPage, ctx }) => {
+  // ===== SETUP & DATA SHARING =====
+  ctx.set('orderData', OrderFactory.create());
 
   // ===== STEP 1: CHECKOUT WITH DATA =====
   await allure.step('Fill checkout form', async () => {
@@ -640,16 +632,16 @@ const testCases = [
 ];
 
 testCases.forEach(({ status, expected, color }) => {
-  test(`@ui Order status ${status} displays correctly`, async ({ page }) => {
-    const orderPage = new OrderDetailsPage(page);
-    await orderPage.open('ORDER-123');
+  // orderDetailsPage must be registered in src/fixtures/test.ts
+  test(`@ui Order status ${status} displays correctly`, async ({ page, orderDetailsPage }) => {
+    await orderDetailsPage.open('ORDER-123');
 
     // Simulate status change or use test data
     await page.evaluate((s) => {
       document.querySelector('[data-testid="order-status"]').textContent = s;
     }, expected);
 
-    await orderPage.expectOrderStatus(expected);
+    await orderDetailsPage.expectOrderStatus(expected);
     // Optionally verify styling
     const statusElement = page.locator('[data-testid="order-status"]');
     await expect(statusElement).toHaveClass(new RegExp(color));
@@ -760,15 +752,17 @@ try {
 #### Issue: Page Not Ready
 
 ```typescript
-// ❌ WRONG: Method called before page load
-const page = new ProductsPage(page);
-page.addProduct(); // Might fail - page not loaded yet
+// ❌ WRONG: Page not navigated yet
+test('@ui example', async ({ productsPage }) => {
+  await productsPage.addProduct(); // Might fail — page not loaded yet
+});
 
-// ✅ CORRECT: Always call open() first
-const page = new ProductsPage(page);
-await page.open();
-await page.assertOnProductsPage();
-await page.addProduct();
+// ✅ CORRECT: Always call open() first, then assert, then act
+test('@ui example', async ({ productsPage }) => {
+  await productsPage.open();
+  await productsPage.assertOnProductsPage();
+  await productsPage.addProduct();
+});
 ```
 
 ### Debugging with Screenshots
@@ -819,6 +813,8 @@ test('@api Log response for debugging', async ({ api }) => {
 - Tag tests appropriately
 - Use context for data sharing
 - Make locators private in page classes
+- Register new page classes in `src/fixtures/test.ts` before using them in tests
+- Destructure page objects from the fixture parameter (`{ productsPage, cartPage }`)
 
 ### ❌ DON'T
 
@@ -829,6 +825,7 @@ test('@api Log response for debugging', async ({ api }) => {
 - Mix business logic in page classes
 - Ignore error responses in API tests
 - Make all Page class properties public
+- Instantiate page objects with `new PageClass(page)` inside test files
 - Create monolithic test methods
 - Use unreliable CSS selectors
 

@@ -1,5 +1,5 @@
 import { test } from '../../src/fixtures/test';
-import allure from '../../src/utils/allure';
+import annotations from '../../src/utils/annotations';
 import { calculateExpectedTotals } from '../../src/utils/priceCalculation';
 import { PRODUCTS } from '../../src/test-data/product';
 import { CheckoutFactory, CheckoutFormData } from '../../src/test-data/checkoutFactory';
@@ -16,19 +16,19 @@ test.describe('Purchase Flow', () => {
     checkoutSummaryPage,
     ctx,
   }) => {
-    await allure.epic('E-Commerce');
-    await allure.feature('Checkout');
-    await allure.story('Purchase product');
+    await annotations.epic('E-Commerce');
+    await annotations.feature('Checkout');
+    await annotations.story('Purchase product');
 
     const checkoutData = CheckoutFactory.create();
     ctx.set<CheckoutFormData>('checkout', checkoutData);
 
-    await allure.step('Open Products page', async () => {
+    await annotations.step('Open Products page', async () => {
       await productsPage.open();
       await productsPage.assertOnProductsPage();
     });
 
-    await allure.step('Add product to cart', async () => {
+    await annotations.step('Add product to cart', async () => {
       await productsPage.expectProductVisible(product1.name, {
         price: product1.price,
         description: product1.description,
@@ -39,7 +39,7 @@ test.describe('Purchase Flow', () => {
       await productsPage.expectProductButtonState(product1.name, 'remove');
     });
 
-    await allure.step('Verify cart contents', async () => {
+    await annotations.step('Verify cart contents', async () => {
       await cartPage.open();
       await cartPage.assertOnCartPage();
       await cartPage.expectNumberOfCartItems(1);
@@ -50,22 +50,22 @@ test.describe('Purchase Flow', () => {
       });
     });
 
-    await allure.step('Open Checkout page', async () => {
+    await annotations.step('Open Checkout page', async () => {
       await cartPage.proceedToCheckout();
       await checkoutStepOnePage.assertOnCheckoutPage();
     });
 
-    await allure.step('Fill in Checkout information', async () => {
+    await annotations.step('Fill in Checkout information', async () => {
       const { firstName, lastName, zip } = ctx.require<CheckoutFormData>('checkout');
       await checkoutStepOnePage.fillCheckoutInformation(firstName, lastName, zip);
     });
 
-    await allure.step('Open Checkout Step 2', async () => {
+    await annotations.step('Open Checkout Step 2', async () => {
       await checkoutStepOnePage.clickContinue();
       await checkoutStepTwoPage.assertOnCheckoutPage();
     });
 
-    await allure.step('Verify order details', async () => {
+    await annotations.step('Verify order details', async () => {
       await checkoutStepTwoPage.expectNumberOfCartItems(1);
       await checkoutStepTwoPage.expectItemInCart(product1.name, {
         price: product1.price,
@@ -80,7 +80,7 @@ test.describe('Purchase Flow', () => {
       await checkoutStepTwoPage.expectTotal(totals.total);
     });
 
-    await allure.step('Finish purchase', async () => {
+    await annotations.step('Finish purchase', async () => {
       await checkoutStepTwoPage.clickFinish();
       await checkoutSummaryPage.assertOnCheckoutPage();
       await checkoutSummaryPage.expectOrderCompleteMessage();
@@ -97,19 +97,19 @@ test.describe('Purchase Flow', () => {
     checkoutSummaryPage,
     ctx,
   }) => {
-    await allure.epic('E-Commerce');
-    await allure.feature('Checkout');
-    await allure.story('User shops and completes purchase with multiple products');
+    await annotations.epic('E-Commerce');
+    await annotations.feature('Checkout');
+    await annotations.story('User shops and completes purchase with multiple products');
 
     const checkoutData = CheckoutFactory.create();
     ctx.set<CheckoutFormData>('checkout', checkoutData);
 
-    await allure.step('Open Products page', async () => {
+    await annotations.step('Open Products page', async () => {
       await productsPage.open();
       await productsPage.assertOnProductsPage();
     });
 
-    await allure.step('Add first product to cart', async () => {
+    await annotations.step('Add first product to cart', async () => {
       await productsPage.expectProductVisible(product1.name, {
         price: product1.price,
         description: product1.description,
@@ -120,7 +120,7 @@ test.describe('Purchase Flow', () => {
       await productsPage.expectProductButtonState(product1.name, 'remove');
     });
 
-    await allure.step('Add second product to cart', async () => {
+    await annotations.step('Add second product to cart', async () => {
       await productsPage.expectProductVisible(product2.name, {
         price: product2.price,
         description: product2.description,
@@ -131,12 +131,12 @@ test.describe('Purchase Flow', () => {
       await productsPage.expectProductButtonState(product2.name, 'remove');
     });
 
-    await allure.step('Navigate to shopping cart', async () => {
+    await annotations.step('Navigate to shopping cart', async () => {
       await cartPage.open();
       await cartPage.assertOnCartPage();
     });
 
-    await allure.step('Verify both products in cart', async () => {
+    await annotations.step('Verify both products in cart', async () => {
       await cartPage.expectNumberOfCartItems(2);
       await cartPage.expectCartItemVisible(product1.name, {
         price: product1.price,
@@ -148,18 +148,18 @@ test.describe('Purchase Flow', () => {
       });
     });
 
-    await allure.step('Proceed to checkout', async () => {
+    await annotations.step('Proceed to checkout', async () => {
       await cartPage.proceedToCheckout();
       await checkoutStepOnePage.assertOnCheckoutPage();
     });
 
-    await allure.step('Fill checkout information', async () => {
+    await annotations.step('Fill checkout information', async () => {
       const { firstName, lastName, zip } = ctx.require<CheckoutFormData>('checkout');
       await checkoutStepOnePage.fillCheckoutInformation(firstName, lastName, zip);
       await checkoutStepOnePage.clickContinue();
     });
 
-    await allure.step('Verify order summary', async () => {
+    await annotations.step('Verify order summary', async () => {
       await checkoutStepTwoPage.assertOnCheckoutPage();
       await checkoutStepTwoPage.expectCartItemVisible(product1.name, {
         price: product1.price,
@@ -171,7 +171,7 @@ test.describe('Purchase Flow', () => {
       });
     });
 
-    await allure.step('Verify price calculation', async () => {
+    await annotations.step('Verify price calculation', async () => {
       const totals = calculateExpectedTotals([product1, product2]);
 
       await checkoutStepTwoPage.expectItemTotal(totals.subtotal);
@@ -179,16 +179,16 @@ test.describe('Purchase Flow', () => {
       await checkoutStepTwoPage.expectTotal(totals.total);
     });
 
-    await allure.step('Complete purchase', async () => {
+    await annotations.step('Complete purchase', async () => {
       await checkoutStepTwoPage.clickFinish();
     });
 
-    await allure.step('Verify order confirmation', async () => {
+    await annotations.step('Verify order confirmation', async () => {
       await checkoutSummaryPage.assertOnCheckoutPage();
       await checkoutSummaryPage.expectOrderCompleteMessage();
     });
 
-    await allure.step('Return to home page', async () => {
+    await annotations.step('Return to home page', async () => {
       await checkoutSummaryPage.clickBackHome();
       await productsPage.assertOnProductsPage();
     });
@@ -202,9 +202,9 @@ test.describe('Purchase Flow', () => {
     checkoutSummaryPage,
     ctx,
   }) => {
-    await allure.epic('E-Commerce');
-    await allure.feature('Checkout');
-    await allure.story('User completes purchase with custom checkout data');
+    await annotations.epic('E-Commerce');
+    await annotations.feature('Checkout');
+    await annotations.story('User completes purchase with custom checkout data');
 
     const customCheckoutData = CheckoutFactory.create({
       firstName: 'John',
@@ -213,16 +213,16 @@ test.describe('Purchase Flow', () => {
     });
     ctx.set<CheckoutFormData>('checkout', customCheckoutData);
 
-    await allure.step('Navigate to Products page', async () => {
+    await annotations.step('Navigate to Products page', async () => {
       await productsPage.open();
       await productsPage.assertOnProductsPage();
     });
 
-    await allure.step('Add products with single click', async () => {
+    await annotations.step('Add products with single click', async () => {
       await productsPage.addProductToCartByName(product1.name);
     });
 
-    await allure.step('Quick checkout process', async () => {
+    await annotations.step('Quick checkout process', async () => {
       await cartPage.open();
       await cartPage.proceedToCheckout();
 
@@ -231,12 +231,12 @@ test.describe('Purchase Flow', () => {
       await checkoutStepOnePage.clickContinue();
     });
 
-    await allure.step('Review and finalize order', async () => {
+    await annotations.step('Review and finalize order', async () => {
       await checkoutStepTwoPage.assertOnCheckoutPage();
       await checkoutStepTwoPage.clickFinish();
     });
 
-    await allure.step('Confirm successful completion', async () => {
+    await annotations.step('Confirm successful completion', async () => {
       await checkoutSummaryPage.assertOnCheckoutPage();
       await checkoutSummaryPage.expectOrderCompleteMessage();
     });

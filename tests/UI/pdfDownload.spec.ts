@@ -3,7 +3,7 @@ import os from 'os';
 import fs from 'fs';
 
 import { test, expect } from '../../src/fixtures/test';
-import allure from '../../src/utils/allure';
+import annotations from '../../src/utils/annotations';
 import { INVOICE_PDF } from '../../src/test-data/pdfExpectedData';
 import { extractPdfData } from '../../src/utils/pdfParser';
 import { env } from '../../config/env';
@@ -13,9 +13,9 @@ test.describe('PDF File Download and Content Verification', () => {
     downloadPage,
     uploadPage,
   }) => {
-    await allure.epic('File Download');
-    await allure.feature('PDF Verification');
-    await allure.story('Upload, download and verify PDF content');
+    await annotations.epic('File Download');
+    await annotations.feature('PDF Verification');
+    await annotations.story('Upload, download and verify PDF content');
 
     test.setTimeout(60_000);
 
@@ -23,29 +23,29 @@ test.describe('PDF File Download and Content Verification', () => {
     let savePath: string | undefined;
 
     try {
-      await allure.step('Navigate to upload page', async () => {
+      await annotations.step('Navigate to upload page', async () => {
         await uploadPage.open();
         await uploadPage.assertOnUploadPage();
       });
 
-      await allure.step('Upload invoice PDF', async () => {
+      await annotations.step('Upload invoice PDF', async () => {
         await uploadPage.uploadFile(fixturePath);
       });
 
       let renamedFilename: string;
 
-      await allure.step('Capture renamed filename from upload confirmation', async () => {
+      await annotations.step('Capture renamed filename from upload confirmation', async () => {
         renamedFilename = await uploadPage.getUploadedFileName();
         expect(renamedFilename).toBeTruthy();
         expect(renamedFilename).toContain(INVOICE_PDF.fixtureFilename);
       });
 
-      await allure.step('Navigate to download page', async () => {
+      await annotations.step('Navigate to download page', async () => {
         await downloadPage.open();
         await downloadPage.assertOnDownloadPage();
       });
 
-      await allure.step('Download the file', async () => {
+      await annotations.step('Download the file', async () => {
         const download = await downloadPage.downloadFileByName(renamedFilename!);
         expect(download).toBeTruthy();
 
@@ -58,7 +58,7 @@ test.describe('PDF File Download and Content Verification', () => {
 
       const { text: pdfText } = await extractPdfData(savePath!);
 
-      await allure.step('Verify PDF contains expected invoice data', async () => {
+      await annotations.step('Verify PDF contains expected invoice data', async () => {
         expect(pdfText).toContain(INVOICE_PDF.totalDue);
         expect(pdfText).toContain(INVOICE_PDF.invoiceDate);
       });
@@ -72,9 +72,9 @@ test.describe('PDF File Download and Content Verification', () => {
   test('@ui @negative N-1 Download link for non-existent file returns error', async ({ page }) => {
     test.setTimeout(30_000);
 
-    await allure.epic('File Download');
-    await allure.feature('PDF Verification');
-    await allure.story('Non-existent file returns error');
+    await annotations.epic('File Download');
+    await annotations.feature('PDF Verification');
+    await annotations.story('Non-existent file returns error');
 
     const response = await page.goto(env.practiceDownloadUrl + '/nonexistent-file.pdf', {
       timeout: 30_000,
@@ -88,9 +88,9 @@ test.describe('PDF File Download and Content Verification', () => {
   });
 
   test('@ui @negative N-3 PDF parsing utility throws on invalid file', async ({}) => {
-    await allure.epic('File Download');
-    await allure.feature('PDF Verification');
-    await allure.story('Invalid PDF throws error');
+    await annotations.epic('File Download');
+    await annotations.feature('PDF Verification');
+    await annotations.story('Invalid PDF throws error');
 
     const fakePdfPath = path.join(os.tmpdir(), 'fake-test.pdf');
     fs.writeFileSync(fakePdfPath, 'not a pdf');

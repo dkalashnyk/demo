@@ -270,7 +270,7 @@ npm run format     # Prettier
 
 ## Architecture Decisions
 
-- **Page Object Model** — all UI interactions encapsulated in page classes extending `BasePage`. Internal locators are `private`; only assertion and action methods are public.
+- **Page Object Model via fixtures** — all UI interactions encapsulated in page classes extending `BasePage`. Internal locators are `private`; only assertion and action methods are public. Page objects are injected as named fixtures (`productsPage`, `cartPage`, etc.) via `src/fixtures/test.ts` — never instantiated with `new` inside test files.
 - **Zod schema validation** — every API response is validated against a typed schema at the point of the request. Separate schemas for POST (includes `createdAt`) and GET responses where shapes differ.
 - **Dual authentication** — UI session via `storageState`, API Bearer token via file. Both generated once in setup and reused across all tests.
 - **Factory + Builder pattern** — `CheckoutFactory` and `buildUser()` generate randomized test data. Builder methods allow targeted overrides without positional argument confusion.
