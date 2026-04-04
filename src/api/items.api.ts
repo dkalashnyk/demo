@@ -7,9 +7,9 @@ import { ENDPOINTS } from './endpoints';
 export const ItemDataSchema = z
   .object({
     year: z.number().int().optional(),
-    Color: z.string().optional(),
-    Price: z.number().optional(),
-    Description: z.string().optional(),
+    color: z.string().optional(),
+    price: z.number().optional(),
+    description: z.string().optional(),
   })
   .optional()
   .nullable();
@@ -50,9 +50,9 @@ export type CreateItemPayload = {
   name: string;
   data: {
     year?: number;
-    Color?: string;
-    Price?: number;
-    Description?: string;
+    color?: string;
+    price?: number;
+    description?: string;
   };
 };
 
@@ -62,16 +62,16 @@ export type CreateItemPayload = {
  *
  * @example
  * buildItem()                          // fully default
- * buildItem({ name: 'Test' })    // partial override
+ * buildItem({ name: 'Test' })          // partial override
  */
 export function buildItem(overrides: Partial<CreateItemPayload> = {}): CreateItemPayload {
   return {
     name: faker.book.title() + '_TA',
     data: {
       year: faker.date.past().getFullYear(),
-      Color: faker.color.human(),
-      Price: faker.number.float({ min: 0, max: 10000 }),
-      Description: faker.lorem.sentence(),
+      color: faker.color.human(),
+      price: faker.number.float({ min: 0, max: 10000 }),
+      description: faker.lorem.sentence(),
     },
 
     ...overrides,

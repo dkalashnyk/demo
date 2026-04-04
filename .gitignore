@@ -16,6 +16,6 @@ node_modules/
 # Agents
 .claude/
 CLAUDE.md
-.github/prompts/*
-.github/instructions/*
+.github/prompts/
+.github/instructions/ 
 .github/copilot-instructions.md

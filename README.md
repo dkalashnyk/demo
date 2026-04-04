@@ -14,7 +14,7 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 | [TypeScript](https://www.typescriptlang.org/)                                                          | Language                                     |
 | [Zod](https://zod.dev/)                                                                                | API response schema validation               |
 | [Faker.js](https://fakerjs.dev/)                                                                       | Test data generation                         |
-| [Allure](https://allurereport.org/)                                                                    | Test reporting                               |
+| [Playwright HTML Reporter](https://playwright.dev/docs/test-reporters#html-reporter)                  | Test reporting                               |
 | [Docker](https://www.docker.com/)                                                                      | Consistent local test execution              |
 | [GitHub Actions](https://github.com/features/actions)                                                  | CI/CD pipeline                               |
 | [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) | Pre-commit hooks                             |
@@ -39,15 +39,15 @@ A full-stack test automation framework built with [Playwright](https://playwrigh
 │   ├── api/                        # Centralized API endpoint constants and API methods and schemas
 │   ├── fixtures/
 │   │   ├── test.ts                 # Extended Playwright fixtures (page + api + ctx)
-│   │   ├── api.fixtures.ts         # API-only fixtures with Allure integration
-│   │   ├── allure-api.client.ts    # Allure-wrapped API request context
+│   │   ├── api.fixtures.ts         # API-only fixtures with step/attachment integration
+│   │   ├── api.client.ts           # Playwright-wrapped API request context
 │   │   └── createApiContext.ts     # Shared API context factory (x-api-key + Bearer)
 │   ├── pages/                      # Pages folder
 │   │   └── components/             # Components folder
 │   ├── test-context/
 │   │   └── scenarioContext.ts      # Generic typed key-value store for cross-step data
 │   ├── test-data/                  # Factories and contants folder
-│   └── utils/                      # Utility functions (Allure, etc.)
+│   └── utils/                      # Utility functions (annotations, PDF parser, price calculation)
 ├── tests/
 │   ├── Auth/
 │   │   └── auth.setup.ts           # UI storageState + API Bearer token setup
@@ -190,20 +190,13 @@ git push
 
 ## Test Reports
 
-### Playwright HTML report
+### Playwright HTML report (local)
 
 ```bash
 npm run report:default
 ```
 
-### Allure report (local)
-
-```bash
-npm run report:allure:generate   # Generate from allure-results/
-npm run report:allure:open       # Open at http://localhost:4040
-```
-
-### Allure report (CI — GitHub Pages)
+### Playwright HTML report (CI — GitHub Pages)
 
 Published automatically after every CI run:
 
@@ -228,7 +221,7 @@ Lint → API Tests → UI Tests → Visual Tests
 - **UI Tests** — runs after API passes.
 - **Visual Tests** — runs after UI passes.
 
-Each test job generates and deploys an Allure report to GitHub Pages. UI and Visual jobs are skipped if their dependency fails.
+Each test job generates and deploys a Playwright HTML report to GitHub Pages. UI and Visual jobs are skipped if their dependency fails.
 
 The reusable workflow `.github/workflows/run-tests.yml` handles all test execution logic — `tests.yml` is a pure orchestrator.
 
@@ -274,7 +267,7 @@ npm run format     # Prettier
 - **Zod schema validation** — every API response is validated against a typed schema at the point of the request. Separate schemas for POST (includes `createdAt`) and GET responses where shapes differ.
 - **Dual authentication** — UI session via `storageState`, API Bearer token via file. Both generated once in setup and reused across all tests.
 - **Factory + Builder pattern** — `CheckoutFactory` and `buildUser()` generate randomized test data. Builder methods allow targeted overrides without positional argument confusion.
-- **Generic ScenarioContext** — typed key-value store (`Map<string, unknown>`) for sharing data across Allure steps without global variables or rigid per-field typed contexts.
+- **Generic ScenarioContext** — typed key-value store (`Map<string, unknown>`) for sharing data across test steps without global variables or rigid per-field typed contexts.
 - **Endpoint constants** — all API paths centralized in `endpoints.ts`. A single place to update when the API changes.
 - **Docker-first local execution** — guarantees visual snapshot pixel-parity with Linux CI. Local OS differences are eliminated entirely.
 - **Reusable CI workflow** — `run-tests.yml` eliminates job duplication. Adding a new test suite requires only a new job entry in `tests.yml`.

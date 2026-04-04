@@ -23,7 +23,7 @@ test('@api @smoke Create an item', async ({ api }) => {
 //   const { res, json, parsedError } = await itemsApi.createItemRaw(api, {
 //     data: {
 //       year: 2020,
-//       Color: 'red',
+//       color: 'red',
 //     },
 //   });
 
